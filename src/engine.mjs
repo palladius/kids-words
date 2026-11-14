@@ -33,13 +33,14 @@ export class KidsWordsEngine {
     return active;
   }
 
+  // Strictly ORTHOGONAL (Horizontal or Vertical ONLY, NO DIAGONAL: Manhattan distance == 1)
   isValidStep(prevCoord, nextCoord, currentPath) {
     const [r, c] = nextCoord;
     if (!this.isTileActive(r, c)) return false;
     if (currentPath.some(([pr, pc]) => pr === r && pc === c)) return false;
     if (!prevCoord) return true;
     const [pr, pc] = prevCoord;
-    return Math.abs(r - pr) <= 1 && Math.abs(c - pc) <= 1;
+    return Math.abs(r - pr) + Math.abs(c - pc) === 1;
   }
 
   spellFromPath(path) {
@@ -50,7 +51,6 @@ export class KidsWordsEngine {
     if (!path || path.length < 2) {
       return { status: 'too_short', word: '' };
     }
-    // Verify all tiles are active and adjacent
     for (let i = 0; i < path.length; i++) {
       const [r, c] = path[i];
       if (!this.isTileActive(r, c)) {
@@ -58,15 +58,14 @@ export class KidsWordsEngine {
       }
       if (i > 0) {
         const [pr, pc] = path[i - 1];
-        if (Math.abs(r - pr) > 1 || Math.abs(c - pc) > 1) {
-          return { status: 'non_adjacent', word: '' };
+        if (Math.abs(r - pr) + Math.abs(c - pc) !== 1) {
+          return { status: 'non_orthogonal', word: '' };
         }
       }
     }
 
     const word = this.spellFromPath(path);
 
-    // Check if it matches an unsolved target word (either by exact path or by word match where all tiles are active)
     const target = this.getUnsolvedTargets().find(t => t.word === word);
     if (target) {
       const beforeActive = new Set();

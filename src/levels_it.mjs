@@ -1,151 +1,175 @@
 export const LEVELS_IT = [
-  // ==========================================
-  // TIER SEBY (6 anni - P1): Griglia 3x3, 3 parole
-  // ==========================================
+  // =========================================================================
+  // TIER SEBY (6 anni - P1): Griglia 3x3, 8-10 parole coese SOLO ORIZZ/VERT
+  // =========================================================================
   {
     id: 'it_seby_001',
     language: 'it',
     tier: 'seby',
-    theme: '🐝 Il Prato delle Api',
+    theme: '🐝 Il Prato delle Api (8 Parole)',
     scene_id: 'meadow',
-    scene_caption: 'Ale e Seby nel prato fiorito davanti all’alveare',
+    scene_caption: 'Ale e Seby di spalle nel prato fiorito davanti all’alveare',
     grid: {
       rows: 3,
       cols: 3,
       initial_letters: [
         ['A', 'P', 'E'],
-        ['R', 'N', 'I'],
-        ['M', 'I', 'A']
+        ['R', 'A', 'N'],
+        ['N', 'I', 'A']
       ]
     },
     targets: [
-      {
-        word: 'APE',
-        cefr: 'A1',
-        emoji: '🐝',
-        needs_explanation: false,
-        path: [[0,0], [0,1], [0,2]]
-      },
+      { word: 'APE', cefr: 'A1', emoji: '🐝', needs_explanation: false, path: [[0,0],[0,1],[0,2]] },
+      { word: 'PANE', cefr: 'A1', emoji: '🥖', needs_explanation: false, path: [[0,1],[1,1],[1,2],[0,2]] },
+      { word: 'RANA', cefr: 'A1', emoji: '🐸', needs_explanation: false, path: [[1,0],[1,1],[1,2],[2,2]] },
       {
         word: 'ARNIA',
         cefr: 'B1+',
         emoji: '🍯',
         needs_explanation: true,
         explanation_text: "L'arnia è la casetta di legno dove vivono le api e preparano il miele!",
-        path: [[0,0], [1,0], [1,1], [1,2], [2,2]]
-      },
-      {
-        word: 'MIA',
-        cefr: 'A1',
-        emoji: '💛',
-        needs_explanation: false,
-        path: [[2,0], [2,1], [2,2]]
-      }
-    ],
-    bonus_words: ['ERA', 'PIA', 'IRA', 'RANA', 'PANE']
-  },
-  {
-    id: 'it_seby_002',
-    language: 'it',
-    tier: 'seby',
-    theme: '🌾 La Fattoria del Nonno',
-    scene_id: 'farm',
-    scene_caption: 'Ale e Seby di spalle che guardano il fienile dorato',
-    grid: {
-      rows: 3,
-      cols: 3,
-      initial_letters: [
-        ['O', 'C', 'A'],
-        ['R', 'A', 'I'],
-        ['B', 'U', 'E']
-      ]
-    },
-    targets: [
-      {
-        word: 'OCA',
-        cefr: 'A1',
-        emoji: '🪿',
-        needs_explanation: false,
-        path: [[0,0], [0,1], [0,2]]
-      },
-      {
-        word: 'BUE',
-        cefr: 'A2',
-        emoji: '🐂',
-        needs_explanation: false,
-        path: [[2,0], [2,1], [2,2]]
+        path: [[0,0],[1,0],[2,0],[2,1],[2,2]]
       },
       {
         word: 'AIA',
         cefr: 'B1+',
         emoji: '🏡',
         needs_explanation: true,
-        explanation_text: "L'aia è il grande cortile davanti alla fattoria dove razzolano le galline e le oche!",
-        path: [[0,2], [1,2], [1,1]]
+        explanation_text: "L'aia è il grande cortile davanti alla fattoria dove razzolano le galline!",
+        path: [[1,1],[2,1],[2,2]]
       },
       {
-        word: 'ORA',
-        cefr: 'A1',
-        emoji: '⏰',
-        needs_explanation: false,
-        path: [[0,0], [1,0], [1,1]]
+        word: 'ARA',
+        cefr: 'B1+',
+        emoji: '🦜',
+        needs_explanation: true,
+        explanation_text: "L'ara è un grande pappagallo coloratissimo con le piume rosse, gialle e blu!",
+        path: [[0,0],[1,0],[1,1]]
+      },
+      {
+        word: 'RAPA',
+        cefr: 'B1+',
+        emoji: '🫜',
+        needs_explanation: true,
+        explanation_text: "La rapa è una verdura tonda che cresce sottoterra nell'orto, come una grande carota viola!",
+        path: [[1,0],[1,1],[0,1],[0,0]]
+      },
+      {
+        word: 'PENA',
+        cefr: 'B1+',
+        emoji: '🥺',
+        needs_explanation: true,
+        explanation_text: "La pena è un piccolo dispiacere o tristezza nel cuore quando qualcuno è triste.",
+        path: [[0,1],[0,2],[1,2],[1,1]]
       }
     ],
-    bonus_words: ['CIAO', 'RIO', 'BAR', 'CIBO']
+    bonus_words: ['ANA', 'PIA', 'IRA']
   },
   {
-    id: 'it_seby_003',
+    id: 'it_seby_002',
     language: 'it',
     tier: 'seby',
-    theme: '🏔️ Il Sentiero nelle Alpi',
-    scene_id: 'alps',
-    scene_caption: 'Ale e Seby con Ghigna sul sentiero sopra il Lago di Zurigo',
+    theme: '☀️ Sole e Mare (9 Parole)',
+    scene_id: 'meadow',
+    scene_caption: 'Ale e Seby di spalle che guardano il sole sopra le montagne',
     grid: {
       rows: 3,
       cols: 3,
       initial_letters: [
         ['S', 'O', 'L'],
-        ['R', 'M', 'E'],
-        ['U', 'V', 'A']
+        ['A', 'R', 'E'],
+        ['M', 'A', 'I']
       ]
     },
     targets: [
+      { word: 'SOLE', cefr: 'A1', emoji: '☀️', needs_explanation: false, path: [[0,0],[0,1],[0,2],[1,2]] },
+      { word: 'MARE', cefr: 'A1', emoji: '🌊', needs_explanation: false, path: [[2,0],[2,1],[1,1],[1,2]] },
+      { word: 'ROSA', cefr: 'A1', emoji: '🌹', needs_explanation: false, path: [[1,1],[0,1],[0,0],[1,0]] },
       {
-        word: 'SOLE',
-        cefr: 'A1',
-        emoji: '☀️',
-        needs_explanation: false,
-        path: [[0,0], [0,1], [0,2], [1,2]]
-      },
-      {
-        word: 'UVA',
-        cefr: 'A1',
-        emoji: '🍇',
-        needs_explanation: false,
-        path: [[2,0], [2,1], [2,2]]
-      },
-      {
-        word: 'ORMA',
+        word: 'RAMA',
         cefr: 'B1+',
-        emoji: '🐾',
+        emoji: '🌿',
         needs_explanation: true,
-        explanation_text: "L'orma è l'impronta che lascia una zampa o uno scarpone sulla neve o nel fango!",
-        path: [[0,1], [1,0], [1,1], [2,2]]
+        explanation_text: "La rama è un ramo pieno di foglie verdi che cresce sugli alberi del bosco!",
+        path: [[1,1],[1,0],[2,0],[2,1]]
+      },
+      { word: 'ORA', cefr: 'A1', emoji: '⏰', needs_explanation: false, path: [[0,1],[1,1],[1,0]] },
+      { word: 'MAI', cefr: 'A1', emoji: '🙅', needs_explanation: false, path: [[2,0],[2,1],[2,2]] },
+      {
+        word: 'ERA',
+        cefr: 'B1+',
+        emoji: '🦖',
+        needs_explanation: true,
+        explanation_text: "Un'era è un tempo lunghissimo della storia, come l'era dei dinosauri!",
+        path: [[1,2],[1,1],[1,0]]
+      },
+      { word: 'SARA', cefr: 'A2', emoji: '👧', needs_explanation: false, path: [[0,0],[1,0],[1,1],[2,1]] },
+      {
+        word: 'ARA',
+        cefr: 'B1+',
+        emoji: '🦜',
+        needs_explanation: true,
+        explanation_text: "L'ara è un grande pappagallo tropicale dalle piume rosse e blu!",
+        path: [[1,0],[1,1],[2,1]]
       }
     ],
-    bonus_words: ['ORA', 'AMO', 'RE', 'MARE']
+    bonus_words: ['AMO', 'ALI']
+  },
+  {
+    id: 'it_seby_003',
+    language: 'it',
+    tier: 'seby',
+    theme: '🐶 Amici Animali (10 Parole)',
+    scene_id: 'meadow',
+    scene_caption: 'Ale e Seby con il draghetto Ghigna nel prato verde',
+    grid: {
+      rows: 3,
+      cols: 3,
+      initial_letters: [
+        ['C', 'A', 'N'],
+        ['O', 'R', 'E'],
+        ['M', 'A', 'I']
+      ]
+    },
+    targets: [
+      { word: 'CANE', cefr: 'A1', emoji: '🐶', needs_explanation: false, path: [[0,0],[0,1],[0,2],[1,2]] },
+      { word: 'MARE', cefr: 'A1', emoji: '🌊', needs_explanation: false, path: [[2,0],[2,1],[1,1],[1,2]] },
+      { word: 'OCA', cefr: 'A1', emoji: '🪿', needs_explanation: false, path: [[1,0],[0,0],[0,1]] },
+      { word: 'RAMO', cefr: 'A1', emoji: '🪵', needs_explanation: false, path: [[1,1],[2,1],[2,0],[1,0]] },
+      { word: 'CARO', cefr: 'A2', emoji: '💖', needs_explanation: false, path: [[0,0],[0,1],[1,1],[1,0]] },
+      { word: 'AMO', cefr: 'A1', emoji: '❤️', needs_explanation: false, path: [[2,1],[2,0],[1,0]] },
+      { word: 'ORA', cefr: 'A1', emoji: '⌚', needs_explanation: false, path: [[1,0],[1,1],[2,1]] },
+      {
+        word: 'ERA',
+        cefr: 'B1+',
+        emoji: '🦕',
+        needs_explanation: true,
+        explanation_text: "Un'era è un periodo grandissimo della preistoria, come quando c'erano i T-Rex!",
+        path: [[1,2],[1,1],[2,1]]
+      },
+      {
+        word: 'ARA',
+        cefr: 'B1+',
+        emoji: '🦜',
+        needs_explanation: true,
+        explanation_text: "L'ara è il pappagallo gigante della giungla che vola tra gli alberi!",
+        path: [[0,1],[1,1],[2,1]]
+      },
+      { word: 'MAI', cefr: 'A1', emoji: '✨', needs_explanation: false, path: [[2,0],[2,1],[2,2]] }
+    ],
+    bonus_words: ['RE', 'MI']
   },
 
-  // ==========================================
-  // TIER ALE (8 anni - P3): Griglia 4x4, 4 parole
-  // ==========================================
+  // =========================================================================
+  // TIER ALE (8 anni - P3): Griglia 4x4, 8-9 parole coese SOLO ORIZZ/VERT
+  // =========================================================================
   {
     id: 'it_ale_001',
     language: 'it',
     tier: 'ale',
-    theme: '🌊 L’Acquario Gigante',
+    theme: '🌊 L’Acquario Gigante (9 Parole)',
     scene_id: 'aquarium',
-    scene_caption: 'Ale e Seby incantati davanti al grande vetro dell’acquario marino',
+    scene_caption: 'Ale e Seby di spalle davanti al grande vetro dell’acquario marino',
     grid: {
       rows: 4,
       cols: 4,
@@ -153,48 +177,56 @@ export const LEVELS_IT = [
         ['M', 'A', 'R', 'E'],
         ['S', 'E', 'P', 'P'],
         ['V', 'E', 'L', 'I'],
-        ['R', 'E', 'T', 'A']
+        ['A', 'L', 'T', 'A']
       ]
     },
     targets: [
-      {
-        word: 'MARE',
-        cefr: 'A1',
-        emoji: '🌊',
-        needs_explanation: false,
-        path: [[0,0], [0,1], [0,2], [0,3]]
-      },
+      { word: 'MARE', cefr: 'A1', emoji: '🌊', needs_explanation: false, path: [[0,0],[0,1],[0,2],[0,3]] },
       {
         word: 'SEPPIA',
         cefr: 'B1+',
         emoji: '🦑',
         needs_explanation: true,
         explanation_text: "La seppia è un animale marino simile al calamaro che spruzza inchiostro nero per nascondersi!",
-        path: [[1,0], [1,1], [1,2], [1,3], [2,3], [3,3]]
+        path: [[1,0],[1,1],[1,2],[1,3],[2,3],[3,3]]
+      },
+      { word: 'VELA', cefr: 'A2', emoji: '⛵', needs_explanation: false, path: [[2,0],[2,1],[3,1],[3,0]] },
+      { word: 'ALTA', cefr: 'A1', emoji: '🦒', needs_explanation: false, path: [[3,0],[3,1],[3,2],[3,3]] },
+      { word: 'PERA', cefr: 'A1', emoji: '🍐', needs_explanation: false, path: [[1,3],[0,3],[0,2],[0,1]] },
+      {
+        word: 'LEVA',
+        cefr: 'B1+',
+        emoji: '🕹️',
+        needs_explanation: true,
+        explanation_text: "La leva è un'asta o maniglia speciale che aiuta a sollevare pesi enormi con poca fatica!",
+        path: [[2,2],[2,1],[2,0],[3,0]]
       },
       {
-        word: 'VELA',
-        cefr: 'A2',
-        emoji: '⛵',
-        needs_explanation: false,
-        path: [[2,0], [2,1], [2,2], [3,3]]
+        word: 'ERA',
+        cefr: 'B1+',
+        emoji: '🦖',
+        needs_explanation: true,
+        explanation_text: "Un'era è un'epoca lunghissima della storia della Terra!",
+        path: [[0,3],[0,2],[0,1]]
       },
       {
-        word: 'RETE',
-        cefr: 'A2',
-        emoji: '🥅',
-        needs_explanation: false,
-        path: [[3,0], [3,1], [3,2], [2,1]]
-      }
+        word: 'PIA',
+        cefr: 'B1+',
+        emoji: '🕊️',
+        needs_explanation: true,
+        explanation_text: "Pia significa una persona molto buona, gentile e generosa con tutti!",
+        path: [[1,3],[2,3],[3,3]]
+      },
+      { word: 'EVA', cefr: 'A2', emoji: '🍎', needs_explanation: false, path: [[2,1],[2,0],[3,0]] }
     ],
-    bonus_words: ['SALE', 'PERA', 'SERA', 'ARTE', 'RANA']
+    bonus_words: ['RE', 'SE', 'LA']
   },
   {
     id: 'it_ale_002',
     language: 'it',
     tier: 'ale',
-    theme: '🚀 Notte Stellata a Zurigo',
-    scene_id: 'zurich_night',
+    theme: '🚀 Notte Stellata a Zurigo (9 Parole)',
+    scene_id: 'aquarium',
     scene_caption: 'Ale e Seby sul pontile del Lago di Zurigo sotto le costellazioni',
     grid: {
       rows: 4,
@@ -207,44 +239,38 @@ export const LEVELS_IT = [
       ]
     },
     targets: [
-      {
-        word: 'LUNA',
-        cefr: 'A1',
-        emoji: '🌙',
-        needs_explanation: false,
-        path: [[0,0], [0,1], [0,2], [0,3]]
-      },
+      { word: 'LUNA', cefr: 'A1', emoji: '🌙', needs_explanation: false, path: [[0,0],[0,1],[0,2],[0,3]] },
       {
         word: 'ASTRO',
         cefr: 'B1+',
         emoji: '✨',
         needs_explanation: true,
         explanation_text: "Un astro è qualsiasi stella, pianeta o cometa che brilla nel cielo notturno!",
-        path: [[1,0], [1,1], [1,2], [1,3], [2,3]]
+        path: [[1,0],[1,1],[1,2],[1,3],[2,3]]
       },
+      { word: 'NAVE', cefr: 'A1', emoji: '🚢', needs_explanation: false, path: [[2,0],[2,1],[2,2],[3,2]] },
+      { word: 'CIELO', cefr: 'A1', emoji: '🌌', needs_explanation: false, path: [[3,0],[3,1],[3,2],[3,3],[2,3]] },
+      { word: 'LANA', cefr: 'A1', emoji: '🧶', needs_explanation: false, path: [[0,0],[1,0],[2,0],[2,1]] },
+      { word: 'SANA', cefr: 'A2', emoji: '💪', needs_explanation: false, path: [[1,1],[1,0],[2,0],[2,1]] },
       {
-        word: 'NAVE',
-        cefr: 'A1',
-        emoji: '🚢',
-        needs_explanation: false,
-        path: [[2,0], [2,1], [2,2], [3,2]]
+        word: 'VELO',
+        cefr: 'B1+',
+        emoji: '👰',
+        needs_explanation: true,
+        explanation_text: "Il velo è un tessuto leggerissimo e trasparente come una nuvola!",
+        path: [[2,2],[3,2],[3,3],[2,3]]
       },
-      {
-        word: 'CIELO',
-        cefr: 'A1',
-        emoji: '🌌',
-        needs_explanation: false,
-        path: [[3,0], [3,1], [3,2], [3,3], [2,3]]
-      }
+      { word: 'ORA', cefr: 'A1', emoji: '⏰', needs_explanation: false, path: [[2,3],[1,3],[0,3]] },
+      { word: 'UNA', cefr: 'A1', emoji: '1️⃣', needs_explanation: false, path: [[0,1],[0,2],[0,3]] }
     ],
-    bonus_words: ['SALI', 'VASO', 'SOLE', ' VELA']
+    bonus_words: ['SU', 'NO', 'VA']
   },
   {
     id: 'it_ale_003',
     language: 'it',
     tier: 'ale',
-    theme: '🐉 Il Bosco dei Draghi',
-    scene_id: 'dragon_woods',
+    theme: '🐉 Il Bosco dei Draghi (8 Parole)',
+    scene_id: 'meadow',
     scene_caption: 'Ale, Seby e il draghetto Ghigna davanti alla quercia magica',
     grid: {
       rows: 4,
@@ -257,36 +283,29 @@ export const LEVELS_IT = [
       ]
     },
     targets: [
-      {
-        word: 'TANA',
-        cefr: 'A2',
-        emoji: '🦊',
-        needs_explanation: false,
-        path: [[0,0], [0,1], [0,2], [0,3]]
-      },
-      {
-        word: 'RAMO',
-        cefr: 'A1',
-        emoji: '🌿',
-        needs_explanation: false,
-        path: [[1,0], [1,1], [1,2], [1,3]]
-      },
+      { word: 'TANA', cefr: 'A2', emoji: '🦊', needs_explanation: false, path: [[0,0],[0,1],[0,2],[0,3]] },
+      { word: 'RAMO', cefr: 'A1', emoji: '🌿', needs_explanation: false, path: [[1,0],[1,1],[1,2],[1,3]] },
       {
         word: 'ELMO',
         cefr: 'B1+',
         emoji: '🪖',
         needs_explanation: true,
         explanation_text: "L'elmo è il casco di metallo scintillante che indossavano i cavalieri per proteggere la testa!",
-        path: [[2,0], [2,1], [2,2], [2,3]]
+        path: [[2,0],[2,1],[2,2],[2,3]]
       },
+      { word: 'LUPO', cefr: 'A1', emoji: '🐺', needs_explanation: false, path: [[3,0],[3,1],[3,2],[3,3]] },
+      { word: 'MARE', cefr: 'A1', emoji: '🌊', needs_explanation: false, path: [[1,2],[1,1],[1,0],[2,0]] },
+      { word: 'AMO', cefr: 'A1', emoji: '❤️', needs_explanation: false, path: [[1,1],[1,2],[1,3]] },
+      { word: 'TRE', cefr: 'A1', emoji: '3️⃣', needs_explanation: false, path: [[0,0],[1,0],[2,0]] },
       {
-        word: 'LUPO',
-        cefr: 'A1',
-        emoji: '🐺',
-        needs_explanation: false,
-        path: [[3,0], [3,1], [3,2], [3,3]]
+        word: 'ERA',
+        cefr: 'B1+',
+        emoji: '⏳',
+        needs_explanation: true,
+        explanation_text: "Un'era è un lunghissimo periodo di tempo nella storia del mondo!",
+        path: [[2,0],[1,0],[1,1]]
       }
     ],
-    bonus_words: ['LUNA', 'MELA', 'ORMA', 'AMORE']
+    bonus_words: ['RE', 'TU', 'SU']
   }
 ];
