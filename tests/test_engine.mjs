@@ -71,3 +71,29 @@ test('Phase 3: Solving all words except the last one leaves exact K letters for 
   assert.equal(finalRes.isLevelComplete, true);
   assert.equal(engine.getActiveTileCount(), 0);
 });
+
+test('Phase 4: Immutable grid layout (no display:none shift on swipe/bubble, bottom dock below matrix) & Nano Banana cartoon scenes', async () => {
+  const fs = await import('node:fs');
+  const html = fs.readFileSync(new URL('../public/index.html', import.meta.url), 'utf8');
+
+  // 1. Fixed 5-row CSS grid stage so no row can push the matrix
+  assert.match(html, /grid-template-rows:\s*112px\s+36px\s+324px\s+76px\s+44px/);
+
+  // 2. Bottom comic dock (#kw-bottom-dock) must appear AFTER #kw-grid-slot in DOM
+  const gridPos = html.indexOf('id="kw-grid-slot"');
+  const dockPos = html.indexOf('id="kw-bottom-dock"');
+  assert.ok(gridPos > 0 && dockPos > gridPos, 'Comic bubble dock must be placed below the immutable letter matrix');
+
+  // 3. Neither .kw-current-word nor .kw-comic-bubble may use display:none (prevents reflow/shift on swipe)
+  const cssBlock = html.slice(html.indexOf('<style>'), html.indexOf('</style>'));
+  assert.ok(!cssBlock.includes('display: none'), 'CSS must not use display: none on swipe or comic elements');
+
+  // 4. All levels map to existing Nano Banana cartoon WebP assets
+  for (const level of LEVELS_IT) {
+    assert.ok(
+      ['bees_meadow', 'aquarium', 'dragon_forest', 'zurich_stars'].includes(level.scene_id),
+      `Unexpected scene_id ${level.scene_id} in ${level.id}`
+    );
+  }
+});
+

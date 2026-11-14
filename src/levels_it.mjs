@@ -7,8 +7,8 @@ export const LEVELS_IT = [
     language: 'it',
     tier: 'seby',
     theme: '🐝 Il Prato delle Api (8 Parole)',
-    scene_id: 'meadow',
-    scene_caption: 'Ale e Seby di spalle nel prato fiorito davanti all’alveare',
+    scene_id: 'bees_meadow',
+    scene_caption: 'Ale e Seby nel prato fiorito con le api, l’arnia, Ghigna e Pupurabbu',
     grid: {
       rows: 3,
       cols: 3,
@@ -70,8 +70,8 @@ export const LEVELS_IT = [
     language: 'it',
     tier: 'seby',
     theme: '☀️ Sole e Mare (9 Parole)',
-    scene_id: 'meadow',
-    scene_caption: 'Ale e Seby di spalle che guardano il sole sopra le montagne',
+    scene_id: 'zurich_stars',
+    scene_caption: 'Ale e Seby sul pontile del Lago di Zurigo con barca a vela, Ghigna e Pupurabbu',
     grid: {
       rows: 3,
       cols: 3,
@@ -120,8 +120,8 @@ export const LEVELS_IT = [
     language: 'it',
     tier: 'seby',
     theme: '🐶 Amici Animali (10 Parole)',
-    scene_id: 'meadow',
-    scene_caption: 'Ale e Seby con il draghetto Ghigna nel prato verde',
+    scene_id: 'dragon_forest',
+    scene_caption: 'Ale e Seby nel bosco con il cagnolino, il pappagallo Ara, Ghigna e Pupurabbu',
     grid: {
       rows: 3,
       cols: 3,
@@ -169,7 +169,7 @@ export const LEVELS_IT = [
     tier: 'ale',
     theme: '🌊 L’Acquario Gigante (9 Parole)',
     scene_id: 'aquarium',
-    scene_caption: 'Ale e Seby di spalle davanti al grande vetro dell’acquario marino',
+    scene_caption: 'Ale e Seby nel tunnel dell’acquario gigante con la seppia, la tartaruga, Ghigna e Pupurabbu',
     grid: {
       rows: 4,
       cols: 4,
@@ -226,8 +226,8 @@ export const LEVELS_IT = [
     language: 'it',
     tier: 'ale',
     theme: '🚀 Notte Stellata a Zurigo (9 Parole)',
-    scene_id: 'aquarium',
-    scene_caption: 'Ale e Seby sul pontile del Lago di Zurigo sotto le costellazioni',
+    scene_id: 'zurich_stars',
+    scene_caption: 'Ale e Seby sul pontile del Lago di Zurigo col cannocchiale sotto le stelle',
     grid: {
       rows: 4,
       cols: 4,
@@ -270,8 +270,8 @@ export const LEVELS_IT = [
     language: 'it',
     tier: 'ale',
     theme: '🐉 Il Bosco dei Draghi (8 Parole)',
-    scene_id: 'meadow',
-    scene_caption: 'Ale, Seby e il draghetto Ghigna davanti alla quercia magica',
+    scene_id: 'dragon_forest',
+    scene_caption: 'Ale, Seby, Ghigna e Pupurabbu nella radura magica del bosco',
     grid: {
       rows: 4,
       cols: 4,
