@@ -1,311 +1,3150 @@
 export const LEVELS_IT = [
-  // =========================================================================
-  // TIER SEBY (6 anni - P1): Griglia 3x3, 8-10 parole coese SOLO ORIZZ/VERT
-  // =========================================================================
   {
-    id: 'it_seby_001',
-    language: 'it',
-    tier: 'seby',
-    theme: '🐝 Il Prato delle Api (8 Parole)',
-    scene_id: 'bees_meadow',
-    scene_caption: 'Ale e Seby nel prato fiorito con le api, l’arnia, Ghigna e Pupurabbu',
-    grid: {
-      rows: 3,
-      cols: 3,
-      initial_letters: [
-        ['A', 'P', 'E'],
-        ['R', 'A', 'N'],
-        ['N', 'I', 'A']
+    "id": "it_seby_001",
+    "language": "it",
+    "tier": "seby",
+    "theme": "🐝 Il Prato delle Api (12 Parole)",
+    "scene_id": "bees_meadow",
+    "scene_caption": "Ale e Seby nel prato fiorito con le api, l’arnia, Ghigna e Pupurabbu",
+    "grid": {
+      "rows": 3,
+      "cols": 3,
+      "initial_letters": [
+        [
+          "A",
+          "P",
+          "E"
+        ],
+        [
+          "R",
+          "A",
+          "N"
+        ],
+        [
+          "N",
+          "I",
+          "A"
+        ]
       ]
     },
-    targets: [
-      { word: 'APE', cefr: 'A1', emoji: '🐝', needs_explanation: false, path: [[0,0],[0,1],[0,2]] },
-      { word: 'PANE', cefr: 'A1', emoji: '🥖', needs_explanation: false, path: [[0,1],[1,1],[1,2],[0,2]] },
-      { word: 'RANA', cefr: 'A1', emoji: '🐸', needs_explanation: false, path: [[1,0],[1,1],[1,2],[2,2]] },
+    "targets": [
       {
-        word: 'ARNIA',
-        cefr: 'B1+',
-        emoji: '🍯',
-        needs_explanation: true,
-        explanation_text: "L'arnia è la casetta di legno dove vivono le api e preparano il miele!",
-        path: [[0,0],[1,0],[2,0],[2,1],[2,2]]
+        "word": "ARNIA",
+        "cefr": "B2",
+        "emoji": "🍯",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "explanation_text": "L'arnia è la casetta di legno dove vivono le api e preparano il miele!"
       },
       {
-        word: 'AIA',
-        cefr: 'B1+',
-        emoji: '🏡',
-        needs_explanation: true,
-        explanation_text: "L'aia è il grande cortile davanti alla fattoria dove razzolano le galline!",
-        path: [[1,1],[2,1],[2,2]]
+        "word": "PENA",
+        "cefr": "B1",
+        "emoji": "🥺",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "explanation_text": "La pena è un piccolo dispiacere nel cuore quando qualcuno è triste."
       },
       {
-        word: 'ARA',
-        cefr: 'B1+',
-        emoji: '🦜',
-        needs_explanation: true,
-        explanation_text: "L'ara è un grande pappagallo coloratissimo con le piume rosse, gialle e blu!",
-        path: [[0,0],[1,0],[1,1]]
+        "word": "RAPE",
+        "cefr": "B1",
+        "emoji": "🫜",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "explanation_text": "Le rape sono radici saporite che crescono nell'orto sotto terra!"
       },
       {
-        word: 'RAPA',
-        cefr: 'B1+',
-        emoji: '🫜',
-        needs_explanation: true,
-        explanation_text: "La rapa è una verdura tonda che cresce sottoterra nell'orto, come una grande carota viola!",
-        path: [[1,0],[1,1],[0,1],[0,0]]
+        "word": "RAPA",
+        "cefr": "B1",
+        "emoji": "🫜",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "explanation_text": "La rapa è una verdura tonda che cresce sottoterra nell'orto!"
       },
       {
-        word: 'PENA',
-        cefr: 'B1+',
-        emoji: '🥺',
-        needs_explanation: true,
-        explanation_text: "La pena è un piccolo dispiacere o tristezza nel cuore quando qualcuno è triste.",
-        path: [[0,1],[0,2],[1,2],[1,1]]
+        "word": "PARA",
+        "cefr": "A2",
+        "emoji": "🧤",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "word": "RANE",
+        "cefr": "A1",
+        "emoji": "🐸",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "RANA",
+        "cefr": "A1",
+        "emoji": "🐸",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "PANE",
+        "cefr": "A1",
+        "emoji": "🥖",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "ARA",
+        "cefr": "B2",
+        "emoji": "🦜",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "explanation_text": "L'ara è un grande pappagallo tropicale dalle piume rosse, gialle e blu!"
+      },
+      {
+        "word": "AIA",
+        "cefr": "B2",
+        "emoji": "🏡",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "explanation_text": "L'aia è il grande cortile davanti alla fattoria dove razzolano le galline!"
+      },
+      {
+        "word": "APE",
+        "cefr": "A1",
+        "emoji": "🐝",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ]
+        ]
       }
     ],
-    bonus_words: ['ANA', 'PIA', 'IRA']
+    "bonus_words": []
   },
   {
-    id: 'it_seby_002',
-    language: 'it',
-    tier: 'seby',
-    theme: '☀️ Sole e Mare (9 Parole)',
-    scene_id: 'alpine_sun',
-    scene_caption: 'Ale e Seby tra le rose col rametto sotto il sole e le barche a vela',
-    grid: {
-      rows: 3,
-      cols: 3,
-      initial_letters: [
-        ['S', 'O', 'L'],
-        ['A', 'R', 'E'],
-        ['M', 'A', 'I']
+    "id": "it_seby_002",
+    "language": "it",
+    "tier": "seby",
+    "theme": "☀️ Sole e Mare (12 Parole)",
+    "scene_id": "alpine_sun",
+    "scene_caption": "Ale e Seby tra le rose col rametto sotto il sole e le barche a vela",
+    "grid": {
+      "rows": 3,
+      "cols": 3,
+      "initial_letters": [
+        [
+          "S",
+          "O",
+          "L"
+        ],
+        [
+          "A",
+          "R",
+          "E"
+        ],
+        [
+          "M",
+          "A",
+          "I"
+        ]
       ]
     },
-    targets: [
-      { word: 'SOLE', cefr: 'A1', emoji: '☀️', needs_explanation: false, path: [[0,0],[0,1],[0,2],[1,2]] },
-      { word: 'MARE', cefr: 'A1', emoji: '🌊', needs_explanation: false, path: [[2,0],[2,1],[1,1],[1,2]] },
-      { word: 'ROSA', cefr: 'A1', emoji: '🌹', needs_explanation: false, path: [[1,1],[0,1],[0,0],[1,0]] },
+    "targets": [
       {
-        word: 'RAMA',
-        cefr: 'B1+',
-        emoji: '🌿',
-        needs_explanation: true,
-        explanation_text: "La rama è un ramo pieno di foglie verdi che cresce sugli alberi del bosco!",
-        path: [[1,1],[1,0],[2,0],[2,1]]
+        "word": "SORA",
+        "cefr": "C1",
+        "emoji": "👩",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "explanation_text": "Sora è un'antica parola affettuosa usata a Roma per chiamare una signora gentile!"
       },
-      { word: 'ORA', cefr: 'A1', emoji: '⏰', needs_explanation: false, path: [[0,1],[1,1],[1,0]] },
-      { word: 'MAI', cefr: 'A1', emoji: '🙅', needs_explanation: false, path: [[2,0],[2,1],[2,2]] },
       {
-        word: 'ERA',
-        cefr: 'B1+',
-        emoji: '🦖',
-        needs_explanation: true,
-        explanation_text: "Un'era è un tempo lunghissimo della storia, come l'era dei dinosauri!",
-        path: [[1,2],[1,1],[1,0]]
+        "word": "MARE",
+        "cefr": "A1",
+        "emoji": "🌊",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ]
       },
-      { word: 'SARA', cefr: 'A2', emoji: '👧', needs_explanation: false, path: [[0,0],[1,0],[1,1],[2,1]] },
       {
-        word: 'ARA',
-        cefr: 'B1+',
-        emoji: '🦜',
-        needs_explanation: true,
-        explanation_text: "L'ara è un grande pappagallo tropicale dalle piume rosse e blu!",
-        path: [[1,0],[1,1],[2,1]]
+        "word": "SOLE",
+        "cefr": "A1",
+        "emoji": "☀️",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "MAI",
+        "cefr": "A1",
+        "emoji": "🙅",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "RASO",
+        "cefr": "B2",
+        "emoji": "🎀",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "explanation_text": "Il raso è un tessuto di seta liscissimo e lucente come uno specchio!"
+      },
+      {
+        "word": "RAMA",
+        "cefr": "B2",
+        "emoji": "🌿",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "explanation_text": "La rama è un bel ramo pieno di foglie verdi sugli alberi del bosco!"
+      },
+      {
+        "word": "SARA",
+        "cefr": "A2",
+        "emoji": "👧",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "word": "ROSA",
+        "cefr": "A1",
+        "emoji": "🌹",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "word": "ARA",
+        "cefr": "B2",
+        "emoji": "🦜",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "explanation_text": "L'ara è un grande pappagallo tropicale dalle piume rosse, gialle e blu!"
+      },
+      {
+        "word": "ERA",
+        "cefr": "B1",
+        "emoji": "🦖",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "explanation_text": "Un'era è un tempo lunghissimo della storia, come l'era dei dinosauri!"
+      },
+      {
+        "word": "ORE",
+        "cefr": "A1",
+        "emoji": "⏰",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "ORA",
+        "cefr": "A1",
+        "emoji": "⏰",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ]
       }
     ],
-    bonus_words: ['AMO', 'ALI']
+    "bonus_words": []
   },
   {
-    id: 'it_seby_003',
-    language: 'it',
-    tier: 'seby',
-    theme: '🐶 Amici Animali (10 Parole)',
-    scene_id: 'dragon_forest',
-    scene_caption: 'Ale e Seby nel bosco con il cagnolino, il pappagallo Ara, Ghigna e Pupurabbu',
-    grid: {
-      rows: 3,
-      cols: 3,
-      initial_letters: [
-        ['C', 'A', 'N'],
-        ['O', 'R', 'E'],
-        ['M', 'A', 'I']
+    "id": "it_seby_003",
+    "language": "it",
+    "tier": "seby",
+    "theme": "🐶 Amici Animali (14 Parole)",
+    "scene_id": "dragon_forest",
+    "scene_caption": "Ale e Seby nel bosco con il cagnolino, il pappagallo Ara, Ghigna e Pupurabbu",
+    "grid": {
+      "rows": 3,
+      "cols": 3,
+      "initial_letters": [
+        [
+          "C",
+          "A",
+          "N"
+        ],
+        [
+          "O",
+          "R",
+          "E"
+        ],
+        [
+          "M",
+          "A",
+          "I"
+        ]
       ]
     },
-    targets: [
-      { word: 'CANE', cefr: 'A1', emoji: '🐶', needs_explanation: false, path: [[0,0],[0,1],[0,2],[1,2]] },
-      { word: 'MARE', cefr: 'A1', emoji: '🌊', needs_explanation: false, path: [[2,0],[2,1],[1,1],[1,2]] },
-      { word: 'OCA', cefr: 'A1', emoji: '🪿', needs_explanation: false, path: [[1,0],[0,0],[0,1]] },
-      { word: 'RAMO', cefr: 'A1', emoji: '🪵', needs_explanation: false, path: [[1,1],[2,1],[2,0],[1,0]] },
-      { word: 'CARO', cefr: 'A2', emoji: '💖', needs_explanation: false, path: [[0,0],[0,1],[1,1],[1,0]] },
-      { word: 'AMO', cefr: 'A1', emoji: '❤️', needs_explanation: false, path: [[2,1],[2,0],[1,0]] },
-      { word: 'ORA', cefr: 'A1', emoji: '⌚', needs_explanation: false, path: [[1,0],[1,1],[2,1]] },
+    "targets": [
       {
-        word: 'ERA',
-        cefr: 'B1+',
-        emoji: '🦕',
-        needs_explanation: true,
-        explanation_text: "Un'era è un periodo grandissimo della preistoria, come quando c'erano i T-Rex!",
-        path: [[1,2],[1,1],[2,1]]
+        "word": "AROMA",
+        "cefr": "B2",
+        "emoji": "☕",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "explanation_text": "L'aroma è il profumo delizioso dei biscotti caldi o delle spezie!"
       },
       {
-        word: 'ARA',
-        cefr: 'B1+',
-        emoji: '🦜',
-        needs_explanation: true,
-        explanation_text: "L'ara è il pappagallo gigante della giungla che vola tra gli alberi!",
-        path: [[0,1],[1,1],[2,1]]
-      },
-      { word: 'MAI', cefr: 'A1', emoji: '✨', needs_explanation: false, path: [[2,0],[2,1],[2,2]] }
-    ],
-    bonus_words: ['RE', 'MI']
-  },
-
-  // =========================================================================
-  // TIER ALE (8 anni - P3): Griglia 4x4, 8-9 parole coese SOLO ORIZZ/VERT
-  // =========================================================================
-  {
-    id: 'it_ale_001',
-    language: 'it',
-    tier: 'ale',
-    theme: '🌊 L’Acquario Gigante (9 Parole)',
-    scene_id: 'aquarium',
-    scene_caption: 'Ale e Seby nel tunnel dell’acquario gigante con la seppia, la tartaruga, Ghigna e Pupurabbu',
-    grid: {
-      rows: 4,
-      cols: 4,
-      initial_letters: [
-        ['M', 'A', 'R', 'E'],
-        ['S', 'E', 'P', 'P'],
-        ['V', 'E', 'L', 'I'],
-        ['A', 'L', 'T', 'A']
-      ]
-    },
-    targets: [
-      { word: 'MARE', cefr: 'A1', emoji: '🌊', needs_explanation: false, path: [[0,0],[0,1],[0,2],[0,3]] },
-      {
-        word: 'SEPPIA',
-        cefr: 'B1+',
-        emoji: '🦑',
-        needs_explanation: true,
-        explanation_text: "La seppia è un animale marino simile al calamaro che spruzza inchiostro nero per nascondersi!",
-        path: [[1,0],[1,1],[1,2],[1,3],[2,3],[3,3]]
-      },
-      { word: 'VELA', cefr: 'A2', emoji: '⛵', needs_explanation: false, path: [[2,0],[2,1],[3,1],[3,0]] },
-      { word: 'ALTA', cefr: 'A1', emoji: '🦒', needs_explanation: false, path: [[3,0],[3,1],[3,2],[3,3]] },
-      { word: 'PERA', cefr: 'A1', emoji: '🍐', needs_explanation: false, path: [[1,3],[0,3],[0,2],[0,1]] },
-      {
-        word: 'LEVA',
-        cefr: 'B1+',
-        emoji: '🕹️',
-        needs_explanation: true,
-        explanation_text: "La leva è un'asta o maniglia speciale che aiuta a sollevare pesi enormi con poca fatica!",
-        path: [[2,2],[2,1],[2,0],[3,0]]
+        "word": "CANE",
+        "cefr": "A1",
+        "emoji": "🐶",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ]
+        ]
       },
       {
-        word: 'ERA',
-        cefr: 'B1+',
-        emoji: '🦖',
-        needs_explanation: true,
-        explanation_text: "Un'era è un'epoca lunghissima della storia della Terra!",
-        path: [[0,3],[0,2],[0,1]]
+        "word": "MAI",
+        "cefr": "A1",
+        "emoji": "🙅",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ]
       },
       {
-        word: 'PIA',
-        cefr: 'B1+',
-        emoji: '🕊️',
-        needs_explanation: true,
-        explanation_text: "Pia significa una persona molto buona, gentile e generosa con tutti!",
-        path: [[1,3],[2,3],[3,3]]
+        "word": "ROCA",
+        "cefr": "C1",
+        "emoji": "🗣️",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "explanation_text": "Roca è una voce bassa e un po' graffiata, come quella di un drago assonnato!"
       },
-      { word: 'EVA', cefr: 'A2', emoji: '🍎', needs_explanation: false, path: [[2,1],[2,0],[3,0]] }
-    ],
-    bonus_words: ['RE', 'SE', 'LA']
-  },
-  {
-    id: 'it_ale_002',
-    language: 'it',
-    tier: 'ale',
-    theme: '🚀 Notte Stellata a Zurigo (9 Parole)',
-    scene_id: 'zurich_stars',
-    scene_caption: 'Ale e Seby sul pontile del Lago di Zurigo col cannocchiale sotto le stelle',
-    grid: {
-      rows: 4,
-      cols: 4,
-      initial_letters: [
-        ['L', 'U', 'N', 'A'],
-        ['A', 'S', 'T', 'R'],
-        ['N', 'A', 'V', 'O'],
-        ['C', 'I', 'E', 'L']
-      ]
-    },
-    targets: [
-      { word: 'LUNA', cefr: 'A1', emoji: '🌙', needs_explanation: false, path: [[0,0],[0,1],[0,2],[0,3]] },
       {
-        word: 'ASTRO',
-        cefr: 'B1+',
-        emoji: '✨',
-        needs_explanation: true,
-        explanation_text: "Un astro è qualsiasi stella, pianeta o cometa che brilla nel cielo notturno!",
-        path: [[1,0],[1,1],[1,2],[1,3],[2,3]]
+        "word": "RENA",
+        "cefr": "C1",
+        "emoji": "🏖️",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "explanation_text": "La rena è la sabbia finissima e dorata della riva del mare!"
       },
-      { word: 'NAVE', cefr: 'A1', emoji: '🚢', needs_explanation: false, path: [[2,0],[2,1],[2,2],[3,2]] },
-      { word: 'CIELO', cefr: 'A1', emoji: '🌌', needs_explanation: false, path: [[3,0],[3,1],[3,2],[3,3],[2,3]] },
-      { word: 'LANA', cefr: 'A1', emoji: '🧶', needs_explanation: false, path: [[0,0],[1,0],[2,0],[2,1]] },
-      { word: 'SANA', cefr: 'A2', emoji: '💪', needs_explanation: false, path: [[1,1],[1,0],[2,0],[2,1]] },
       {
-        word: 'VELO',
-        cefr: 'B1+',
-        emoji: '👰',
-        needs_explanation: true,
-        explanation_text: "Il velo è un tessuto leggerissimo e trasparente come una nuvola!",
-        path: [[2,2],[3,2],[3,3],[2,3]]
+        "word": "COMA",
+        "cefr": "B2",
+        "emoji": "☄️",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "explanation_text": "In astronomia la coma è la chioma luminosa che avvolge la testa di una cometa!"
       },
-      { word: 'ORA', cefr: 'A1', emoji: '⏰', needs_explanation: false, path: [[2,3],[1,3],[0,3]] },
-      { word: 'UNA', cefr: 'A1', emoji: '1️⃣', needs_explanation: false, path: [[0,1],[0,2],[0,3]] }
-    ],
-    bonus_words: ['SU', 'NO', 'VA']
-  },
-  {
-    id: 'it_ale_003',
-    language: 'it',
-    tier: 'ale',
-    theme: '🐉 Il Bosco dei Draghi (8 Parole)',
-    scene_id: 'knight_woods',
-    scene_caption: 'Ale con l’elmo, Seby, la volpe nella tana, il lupetto, Ghigna e Pupurabbu',
-    grid: {
-      rows: 4,
-      cols: 4,
-      initial_letters: [
-        ['T', 'A', 'N', 'A'],
-        ['R', 'A', 'M', 'O'],
-        ['E', 'L', 'M', 'O'],
-        ['L', 'U', 'P', 'O']
-      ]
-    },
-    targets: [
-      { word: 'TANA', cefr: 'A2', emoji: '🦊', needs_explanation: false, path: [[0,0],[0,1],[0,2],[0,3]] },
-      { word: 'RAMO', cefr: 'A1', emoji: '🌿', needs_explanation: false, path: [[1,0],[1,1],[1,2],[1,3]] },
       {
-        word: 'ELMO',
-        cefr: 'B1+',
-        emoji: '🪖',
-        needs_explanation: true,
-        explanation_text: "L'elmo è il casco di metallo scintillante che indossavano i cavalieri per proteggere la testa!",
-        path: [[2,0],[2,1],[2,2],[2,3]]
+        "word": "ARENA",
+        "cefr": "B1",
+        "emoji": "🏟️",
+        "needs_explanation": true,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "explanation_text": "L'arena è il grande anfiteatro antico o la distesa di sabbia dorata!"
       },
-      { word: 'LUPO', cefr: 'A1', emoji: '🐺', needs_explanation: false, path: [[3,0],[3,1],[3,2],[3,3]] },
-      { word: 'MARE', cefr: 'A1', emoji: '🌊', needs_explanation: false, path: [[1,2],[1,1],[1,0],[2,0]] },
-      { word: 'AMO', cefr: 'A1', emoji: '❤️', needs_explanation: false, path: [[1,1],[1,2],[1,3]] },
-      { word: 'TRE', cefr: 'A1', emoji: '3️⃣', needs_explanation: false, path: [[0,0],[1,0],[2,0]] },
       {
-        word: 'ERA',
-        cefr: 'B1+',
-        emoji: '⏳',
-        needs_explanation: true,
-        explanation_text: "Un'era è un lunghissimo periodo di tempo nella storia del mondo!",
-        path: [[2,0],[1,0],[1,1]]
+        "word": "MORE",
+        "cefr": "B1",
+        "emoji": "🫐",
+        "needs_explanation": true,
+        "path": [
+          [
+            2,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "explanation_text": "Le more sono i frutti di bosco neri e dolcissimi dell'estate!"
+      },
+      {
+        "word": "MORA",
+        "cefr": "B1",
+        "emoji": "🫐",
+        "needs_explanation": true,
+        "path": [
+          [
+            2,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "explanation_text": "La mora è il frutto dolce e scuro che cresce sui rovi nei sentieri!"
+      },
+      {
+        "word": "CARO",
+        "cefr": "A2",
+        "emoji": "💖",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "word": "CARE",
+        "cefr": "A2",
+        "emoji": "💖",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "CARA",
+        "cefr": "A2",
+        "emoji": "💖",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "word": "AMORE",
+        "cefr": "A1",
+        "emoji": "💘",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "RANE",
+        "cefr": "A1",
+        "emoji": "🐸",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ]
+        ]
       }
     ],
-    bonus_words: ['RE', 'TU', 'SU']
+    "bonus_words": [
+      "RAMO",
+      "NERO",
+      "NERA",
+      "MARE",
+      "ARA",
+      "ERA",
+      "ORE",
+      "ORA",
+      "OCA",
+      "AMO"
+    ]
+  },
+  {
+    "id": "it_ale_001",
+    "language": "it",
+    "tier": "ale",
+    "theme": "🌊 L’Acquario & I Tesori (20 Parole · 12 Lettere)",
+    "scene_id": "aquarium",
+    "scene_caption": "Ale e Seby nel tunnel dell’acquario gigante con la seppia, la tartaruga, Ghigna e Pupurabbu",
+    "grid": {
+      "rows": 3,
+      "cols": 4,
+      "initial_letters": [
+        [
+          "E",
+          "L",
+          "O",
+          "R"
+        ],
+        [
+          "S",
+          "O",
+          "M",
+          "E"
+        ],
+        [
+          "A",
+          "R",
+          "A",
+          "R"
+        ]
+      ]
+    },
+    "targets": [
+      {
+        "word": "AROMA",
+        "cefr": "B2",
+        "emoji": "☕",
+        "needs_explanation": true,
+        "path": [
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "explanation_text": "L'aroma è il profumo delizioso dei biscotti caldi o delle spezie!"
+      },
+      {
+        "word": "AMORE",
+        "cefr": "A1",
+        "emoji": "💘",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "word": "SOLE",
+        "cefr": "A1",
+        "emoji": "☀️",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "word": "RARO",
+        "cefr": "A2",
+        "emoji": "💎",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      },
+      {
+        "word": "SORA",
+        "cefr": "C1",
+        "emoji": "👩",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        "explanation_text": "Sora è un'antica parola affettuosa usata a Roma per chiamare una signora gentile!"
+      },
+      {
+        "word": "RASO",
+        "cefr": "B2",
+        "emoji": "🎀",
+        "needs_explanation": true,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "explanation_text": "Il raso è un tessuto di seta liscissimo e lucente come uno specchio!"
+      },
+      {
+        "word": "MOLE",
+        "cefr": "B2",
+        "emoji": "🏛️",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "explanation_text": "La mole è la grandezza imponente di una montagna o di un palazzo gigante!"
+      },
+      {
+        "word": "REMO",
+        "cefr": "B1",
+        "emoji": "🚣",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "explanation_text": "Il remo è la pala di legno che fa avanzare le barche sull'acqua!"
+      },
+      {
+        "word": "REMA",
+        "cefr": "B1",
+        "emoji": "🚣",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "explanation_text": "Rema vuol dire spingere la barca sull'acqua usando i remi di legno!"
+      },
+      {
+        "word": "RAME",
+        "cefr": "B1",
+        "emoji": "🥉",
+        "needs_explanation": true,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ]
+        ],
+        "explanation_text": "Il rame è un metallo rosso-dorato con cui si fanno fili elettrici e pentole!"
+      },
+      {
+        "word": "MORE",
+        "cefr": "B1",
+        "emoji": "🫐",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            3
+          ]
+        ],
+        "explanation_text": "Le more sono i frutti di bosco neri e dolcissimi dell'estate!"
+      },
+      {
+        "word": "MORA",
+        "cefr": "B1",
+        "emoji": "🫐",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        "explanation_text": "La mora è il frutto dolce e scuro che cresce sui rovi nei sentieri!"
+      },
+      {
+        "word": "MOLO",
+        "cefr": "B1",
+        "emoji": "⚓",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "explanation_text": "Il molo è la banchina sul mare dove attraccano le barche!"
+      },
+      {
+        "word": "SARA",
+        "cefr": "A2",
+        "emoji": "👧",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "RARA",
+        "cefr": "A2",
+        "emoji": "💎",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            0
+          ]
+        ]
+      },
+      {
+        "word": "SOLO",
+        "cefr": "A1",
+        "emoji": "🧍",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "ROSE",
+        "cefr": "A1",
+        "emoji": "🌹",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "word": "ROSA",
+        "cefr": "A1",
+        "emoji": "🌹",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ]
+        ]
+      },
+      {
+        "word": "RAMO",
+        "cefr": "A1",
+        "emoji": "🌿",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "MARE",
+        "cefr": "A1",
+        "emoji": "🌊",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "bonus_words": [
+      "ARA",
+      "ERA",
+      "ORE",
+      "ORA",
+      "AMO"
+    ]
+  },
+  {
+    "id": "it_ale_002",
+    "language": "it",
+    "tier": "ale",
+    "theme": "🚀 Notte Stellata a Zurigo (20 Parole · 12 Lettere)",
+    "scene_id": "zurich_stars",
+    "scene_caption": "Ale e Seby sul pontile del Lago di Zurigo col cannocchiale sotto le stelle",
+    "grid": {
+      "rows": 3,
+      "cols": 4,
+      "initial_letters": [
+        [
+          "O",
+          "N",
+          "O",
+          "T"
+        ],
+        [
+          "S",
+          "O",
+          "R",
+          "I"
+        ],
+        [
+          "E",
+          "C",
+          "A",
+          "M"
+        ]
+      ]
+    },
+    "targets": [
+      {
+        "word": "SORA",
+        "cefr": "C1",
+        "emoji": "👩",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "explanation_text": "Sora è un'antica parola affettuosa usata a Roma per chiamare una signora gentile!"
+      },
+      {
+        "word": "MITO",
+        "cefr": "B1",
+        "emoji": "⚡",
+        "needs_explanation": true,
+        "path": [
+          [
+            2,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "explanation_text": "Un mito è una leggenda antica piena di eroi e creature fantastiche!"
+      },
+      {
+        "word": "NOCE",
+        "cefr": "A2",
+        "emoji": "🌰",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            0
+          ]
+        ]
+      },
+      {
+        "word": "ROSO",
+        "cefr": "C1",
+        "emoji": "🐹",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "explanation_text": "Roso significa rosicchiato piano piano dai dentini di un castoro!"
+      },
+      {
+        "word": "ROCA",
+        "cefr": "C1",
+        "emoji": "🗣️",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "explanation_text": "Roca è una voce bassa e un po' graffiata, come quella di un drago assonnato!"
+      },
+      {
+        "word": "RITO",
+        "cefr": "B2",
+        "emoji": "🕯️",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "explanation_text": "Un rito è una cerimonia antica e solenne tramandata nel tempo!"
+      },
+      {
+        "word": "MIRA",
+        "cefr": "B2",
+        "emoji": "🎯",
+        "needs_explanation": true,
+        "path": [
+          [
+            2,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "explanation_text": "La mira è la precisione dell'occhio quando punti al centro del bersaglio!"
+      },
+      {
+        "word": "TONO",
+        "cefr": "B1",
+        "emoji": "🎼",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "explanation_text": "Il tono è l'altezza musicale di una voce o di una nota!"
+      },
+      {
+        "word": "RIMA",
+        "cefr": "B1",
+        "emoji": "📜",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "explanation_text": "La rima è quando due parole finiscono con lo stesso suono, come cuore e fiore!"
+      },
+      {
+        "word": "TORO",
+        "cefr": "A2",
+        "emoji": "🐂",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      },
+      {
+        "word": "TORI",
+        "cefr": "A2",
+        "emoji": "🐂",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "word": "TIRO",
+        "cefr": "A2",
+        "emoji": "⚽",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "TIRA",
+        "cefr": "A2",
+        "emoji": "🪢",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "CORO",
+        "cefr": "A2",
+        "emoji": "🎶",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "CORI",
+        "cefr": "A2",
+        "emoji": "🎶",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "word": "CARO",
+        "cefr": "A2",
+        "emoji": "💖",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "CARI",
+        "cefr": "A2",
+        "emoji": "💖",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "word": "ROSE",
+        "cefr": "A1",
+        "emoji": "🌹",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ]
+        ]
+      },
+      {
+        "word": "RAMI",
+        "cefr": "A1",
+        "emoji": "🌿",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "word": "MARI",
+        "cefr": "A1",
+        "emoji": "🌊",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "bonus_words": [
+      "COSE",
+      "IRA",
+      "ECO",
+      "ORO",
+      "ORA",
+      "OCA"
+    ]
+  },
+  {
+    "id": "it_ale_003",
+    "language": "it",
+    "tier": "ale",
+    "theme": "🐉 Il Bosco dei Draghi (20 Parole · 12 Lettere · B2/C1)",
+    "scene_id": "knight_woods",
+    "scene_caption": "Ale con l’elmo, Seby, la volpe nella tana, il lupetto, Ghigna e Pupurabbu",
+    "grid": {
+      "rows": 3,
+      "cols": 4,
+      "initial_letters": [
+        [
+          "R",
+          "A",
+          "R",
+          "A"
+        ],
+        [
+          "E",
+          "M",
+          "O",
+          "C"
+        ],
+        [
+          "N",
+          "A",
+          "M",
+          "I"
+        ]
+      ]
+    },
+    "targets": [
+      {
+        "word": "AROMI",
+        "cefr": "B2",
+        "emoji": "🌿",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            3
+          ]
+        ],
+        "explanation_text": "Gli aromi sono le erbe profumate come rosmarino e basilico!"
+      },
+      {
+        "word": "ARENA",
+        "cefr": "B1",
+        "emoji": "🏟️",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "explanation_text": "L'arena è il grande anfiteatro antico o la distesa di sabbia dorata!"
+      },
+      {
+        "word": "AMICA",
+        "cefr": "A1",
+        "emoji": "👧",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            0,
+            3
+          ]
+        ]
+      },
+      {
+        "word": "RAMA",
+        "cefr": "B2",
+        "emoji": "🌿",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "explanation_text": "La rama è un bel ramo pieno di foglie verdi sugli alberi del bosco!"
+      },
+      {
+        "word": "ROCA",
+        "cefr": "C1",
+        "emoji": "🗣️",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "explanation_text": "Roca è una voce bassa e un po' graffiata, come quella di un drago assonnato!"
+      },
+      {
+        "word": "RENA",
+        "cefr": "C1",
+        "emoji": "🏖️",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "explanation_text": "La rena è la sabbia finissima e dorata della riva del mare!"
+      },
+      {
+        "word": "AROMA",
+        "cefr": "B2",
+        "emoji": "☕",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "explanation_text": "L'aroma è il profumo delizioso dei biscotti caldi o delle spezie!"
+      },
+      {
+        "word": "COMA",
+        "cefr": "B2",
+        "emoji": "☄️",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "explanation_text": "In astronomia la coma è la chioma luminosa che avvolge la testa di una cometa!"
+      },
+      {
+        "word": "REMO",
+        "cefr": "B1",
+        "emoji": "🚣",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "explanation_text": "Il remo è la pala di legno che fa avanzare le barche sull'acqua!"
+      },
+      {
+        "word": "REMA",
+        "cefr": "B1",
+        "emoji": "🚣",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "explanation_text": "Rema vuol dire spingere la barca sull'acqua usando i remi di legno!"
+      },
+      {
+        "word": "RAME",
+        "cefr": "B1",
+        "emoji": "🥉",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "explanation_text": "Il rame è un metallo rosso-dorato con cui si fanno fili elettrici e pentole!"
+      },
+      {
+        "word": "MORA",
+        "cefr": "B1",
+        "emoji": "🫐",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "explanation_text": "La mora è il frutto dolce e scuro che cresce sui rovi nei sentieri!"
+      },
+      {
+        "word": "RARO",
+        "cefr": "A2",
+        "emoji": "💎",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "RARA",
+        "cefr": "A2",
+        "emoji": "💎",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ]
+        ]
+      },
+      {
+        "word": "CIMA",
+        "cefr": "A2",
+        "emoji": "🏔️",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "word": "CARO",
+        "cefr": "A2",
+        "emoji": "💖",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            3
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "CARA",
+        "cefr": "A2",
+        "emoji": "💖",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            3
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      {
+        "word": "AMICO",
+        "cefr": "A1",
+        "emoji": "👦",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "RAMO",
+        "cefr": "A1",
+        "emoji": "🌿",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "NERA",
+        "cefr": "A1",
+        "emoji": "⬛",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      }
+    ],
+    "bonus_words": [
+      "MARE",
+      "ARA",
+      "ERA",
+      "ORA",
+      "OCA",
+      "AMO"
+    ]
+  },
+  {
+    "id": "it_ale_004",
+    "language": "it",
+    "tier": "ale",
+    "theme": "🍁 Sfida Autunnale C1 (20 Parole · 12 Lettere)",
+    "scene_id": "dragon_forest",
+    "scene_caption": "Sfida extra da 20 parole con aceri, cetre, rocche e parole C1!",
+    "grid": {
+      "rows": 3,
+      "cols": 4,
+      "initial_letters": [
+        [
+          "E",
+          "R",
+          "A",
+          "R"
+        ],
+        [
+          "C",
+          "O",
+          "S",
+          "A"
+        ],
+        [
+          "A",
+          "T",
+          "E",
+          "C"
+        ]
+      ]
+    },
+    "targets": [
+      {
+        "word": "ACERO",
+        "cefr": "B2",
+        "emoji": "🍁",
+        "needs_explanation": true,
+        "path": [
+          [
+            2,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "explanation_text": "L'acero è l'albero dalle foglie a cinque punte che in autunno diventano rosse!"
+      },
+      {
+        "word": "SARA",
+        "cefr": "A2",
+        "emoji": "👧",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "word": "SETA",
+        "cefr": "A2",
+        "emoji": "🧣",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            0
+          ]
+        ]
+      },
+      {
+        "word": "CASO",
+        "cefr": "A2",
+        "emoji": "🎲",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      },
+      {
+        "word": "SORA",
+        "cefr": "C1",
+        "emoji": "👩",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "explanation_text": "Sora è un'antica parola affettuosa usata a Roma per chiamare una signora gentile!"
+      },
+      {
+        "word": "ROTA",
+        "cefr": "C1",
+        "emoji": "🎡",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        "explanation_text": "La rota è la parola antica e poetica per indicare una grande ruota!"
+      },
+      {
+        "word": "ROCA",
+        "cefr": "C1",
+        "emoji": "🗣️",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        "explanation_text": "Roca è una voce bassa e un po' graffiata, come quella di un drago assonnato!"
+      },
+      {
+        "word": "TOSA",
+        "cefr": "B2",
+        "emoji": "🐑",
+        "needs_explanation": true,
+        "path": [
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "explanation_text": "Tosa vuol dire tagliare la lana morbida alle pecorelle in primavera!"
+      },
+      {
+        "word": "RASO",
+        "cefr": "B2",
+        "emoji": "🎀",
+        "needs_explanation": true,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "explanation_text": "Il raso è un tessuto di seta liscissimo e lucente come uno specchio!"
+      },
+      {
+        "word": "CERO",
+        "cefr": "B2",
+        "emoji": "🕯️",
+        "needs_explanation": true,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "explanation_text": "Il cero è una candela grande e solenne che illumina a lungo!"
+      },
+      {
+        "word": "RARO",
+        "cefr": "A2",
+        "emoji": "💎",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      },
+      {
+        "word": "RARA",
+        "cefr": "A2",
+        "emoji": "💎",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "word": "CERA",
+        "cefr": "A2",
+        "emoji": "🕯️",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "CARA",
+        "cefr": "A2",
+        "emoji": "💖",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "ROSE",
+        "cefr": "A1",
+        "emoji": "🌹",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "ROSA",
+        "cefr": "A1",
+        "emoji": "🌹",
+        "needs_explanation": false,
+        "path": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "COSE",
+        "cefr": "A1",
+        "emoji": "📦",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "COSA",
+        "cefr": "A1",
+        "emoji": "❓",
+        "needs_explanation": false,
+        "path": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "CASE",
+        "cefr": "A1",
+        "emoji": "🏘️",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      {
+        "word": "CASA",
+        "cefr": "A1",
+        "emoji": "🏠",
+        "needs_explanation": false,
+        "path": [
+          [
+            2,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "bonus_words": [
+      "ARA",
+      "ERA",
+      "ECO",
+      "ORE",
+      "ORA",
+      "OCA"
+    ]
   }
 ];

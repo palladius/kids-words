@@ -43,7 +43,7 @@ const html = `<!DOCTYPE html>
     .kw-root {
       font-family: var(--font-sans);
       color: var(--foreground, #f8fafc);
-      max-width: 720px;
+      max-width: 780px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -108,11 +108,11 @@ const html = `<!DOCTYPE html>
       overflow: hidden;
       border: 2px solid rgba(255, 255, 255, 0.24);
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
-      height: 644px;
-      min-height: 644px;
-      max-height: 644px;
+      height: 626px;
+      min-height: 626px;
+      max-height: 626px;
       display: grid;
-      grid-template-rows: 112px 36px 324px 76px 44px;
+      grid-template-rows: 150px 36px 272px 76px 44px;
       gap: 6px;
       padding: 12px;
       color: #fff;
@@ -149,20 +149,20 @@ const html = `<!DOCTYPE html>
       pointer-events: none;
     }
 
-    /* ROW 1: HUD TOP (112px locked) */
+    /* ROW 1: HUD TOP (150px locked — fits up to 20 words cleanly!) */
     .kw-hud-top {
       position: relative;
       z-index: 2;
-      height: 112px;
-      min-height: 112px;
-      max-height: 112px;
+      height: 150px;
+      min-height: 150px;
+      max-height: 150px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 6px;
-      background: rgba(15, 23, 42, 0.72);
+      gap: 5px;
+      background: rgba(15, 23, 42, 0.76);
       backdrop-filter: blur(8px);
-      padding: 8px 12px;
+      padding: 8px 10px;
       border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.2);
       overflow: hidden;
@@ -178,37 +178,38 @@ const html = `<!DOCTYPE html>
     .kw-targets {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 4px 5px;
       justify-content: center;
       align-content: center;
       flex: 1;
-      overflow: hidden;
+      overflow-y: auto;
     }
     .kw-word-slot {
       display: inline-flex;
       align-items: center;
-      gap: 3px;
-      background: rgba(15, 23, 42, 0.82);
-      padding: 4px 7px;
-      border-radius: 9px;
+      gap: 2px;
+      background: rgba(15, 23, 42, 0.84);
+      padding: 3px 5px;
+      border-radius: 8px;
       border: 1px solid rgba(255, 255, 255, 0.24);
       cursor: pointer;
-      height: 28px;
+      height: 23px;
+      font-size: 11px;
     }
     .kw-word-slot.solved {
       background: rgba(22, 163, 74, 0.94);
       border-color: #86efac;
     }
     .kw-slot-box {
-      width: 20px;
-      height: 20px;
+      width: 15px;
+      height: 17px;
       border-radius: 4px;
       background: rgba(255, 255, 255, 0.18);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 12px;
+      font-size: 11px;
       color: #fff;
     }
 
@@ -250,13 +251,13 @@ const html = `<!DOCTYPE html>
       transform: scale(1);
     }
 
-    /* ROW 3: IMMUTABLE MATRIX SLOT (324px locked) */
+    /* ROW 3: IMMUTABLE MATRIX SLOT (272px locked) */
     .kw-grid-slot {
       position: relative;
       z-index: 2;
-      height: 324px;
-      min-height: 324px;
-      max-height: 324px;
+      height: 272px;
+      min-height: 272px;
+      max-height: 272px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -504,13 +505,13 @@ const html = `<!DOCTYPE html>
       <div class="kw-profiles">
         <span style="font-size:12px;font-weight:800;">🐧 Giocatore:</span>
         <button class="kw-profile-btn active" data-tier="seby" id="btn-tier-seby">🏎️ Seby (6a · 3×3)</button>
-        <button class="kw-profile-btn" data-tier="ale" id="btn-tier-ale">🐉 Ale (8a · 4×4)</button>
+        <button class="kw-profile-btn" data-tier="ale" id="btn-tier-ale">🐉 Ale / Sfida (12 lett · 20 parole)</button>
       </div>
       <div class="kw-level-nav">
         <button class="kw-pill-btn" id="btn-prev-lvl" title="Livello precedente">◀</button>
         <span id="lbl-level-idx" style="font-size:12px;font-weight:800;">Livello 1 / 3</span>
         <button class="kw-pill-btn" id="btn-next-lvl" title="Livello successivo">▶</button>
-        <button class="kw-pill-btn" id="btn-album" title="Apri l'Album delle 6 Foto Cartoon di Ale & Seby">🖼️ Album (6)</button>
+        <button class="kw-pill-btn" id="btn-album" title="Apri l'Album delle Foto Cartoon di Ale & Seby">🖼️ Album</button>
       </div>
     </div>
 
