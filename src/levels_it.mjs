@@ -70,8 +70,8 @@ export const LEVELS_IT = [
     language: 'it',
     tier: 'seby',
     theme: '☀️ Sole e Mare (9 Parole)',
-    scene_id: 'zurich_stars',
-    scene_caption: 'Ale e Seby sul pontile del Lago di Zurigo con barca a vela, Ghigna e Pupurabbu',
+    scene_id: 'alpine_sun',
+    scene_caption: 'Ale e Seby tra le rose col rametto sotto il sole e le barche a vela',
     grid: {
       rows: 3,
       cols: 3,
@@ -270,8 +270,8 @@ export const LEVELS_IT = [
     language: 'it',
     tier: 'ale',
     theme: '🐉 Il Bosco dei Draghi (8 Parole)',
-    scene_id: 'dragon_forest',
-    scene_caption: 'Ale, Seby, Ghigna e Pupurabbu nella radura magica del bosco',
+    scene_id: 'knight_woods',
+    scene_caption: 'Ale con l’elmo, Seby, la volpe nella tana, il lupetto, Ghigna e Pupurabbu',
     grid: {
       rows: 4,
       cols: 4,

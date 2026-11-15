@@ -11,9 +11,11 @@ function loadAssetDataUri(filename) {
 
 const SCENES_IMG = {
   bees_meadow: loadAssetDataUri('ale_seby_bees_meadow.webp'),
-  aquarium: loadAssetDataUri('ale_seby_aquarium.webp'),
+  alpine_sun: loadAssetDataUri('ale_seby_alpine_sun.webp'),
   dragon_forest: loadAssetDataUri('ale_seby_dragon_forest.webp'),
-  zurich_stars: loadAssetDataUri('ale_seby_zurich_stars.webp')
+  aquarium: loadAssetDataUri('ale_seby_aquarium.webp'),
+  zurich_stars: loadAssetDataUri('ale_seby_zurich_stars.webp'),
+  knight_woods: loadAssetDataUri('ale_seby_knight_woods.webp')
 };
 
 const html = `<!DOCTYPE html>
@@ -413,7 +415,7 @@ const html = `<!DOCTYPE html>
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 52%;
+      max-width: 48%;
     }
     .kw-action-btn {
       background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -425,6 +427,74 @@ const html = `<!DOCTYPE html>
       font-size: 12px;
       cursor: pointer;
       white-space: nowrap;
+    }
+
+    /* =====================================================================
+     * ALBUM DEI RICORDI MODAL (Overlay inside #kw-stage, zero shift!)
+     * ===================================================================== */
+    .kw-album-modal {
+      position: absolute;
+      inset: 12px;
+      z-index: 10;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      border: 2px solid #f59e0b;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .kw-album-modal.visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .kw-album-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 900;
+      font-size: 16px;
+      color: #fde68a;
+    }
+    .kw-album-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .kw-album-card {
+      background: rgba(30, 41, 59, 0.9);
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform 0.14s ease, border-color 0.14s ease;
+    }
+    .kw-album-card:hover {
+      transform: translateY(-2px);
+      border-color: #f59e0b;
+    }
+    .kw-album-card img {
+      width: 100%;
+      height: 145px;
+      object-fit: cover;
+      display: block;
+    }
+    .kw-album-card-caption {
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.25;
+      color: #f8fafc;
     }
   </style>
 </head>
@@ -440,6 +510,7 @@ const html = `<!DOCTYPE html>
         <button class="kw-pill-btn" id="btn-prev-lvl" title="Livello precedente">◀</button>
         <span id="lbl-level-idx" style="font-size:12px;font-weight:800;">Livello 1 / 3</span>
         <button class="kw-pill-btn" id="btn-next-lvl" title="Livello successivo">▶</button>
+        <button class="kw-pill-btn" id="btn-album" title="Apri l'Album delle 6 Foto Cartoon di Ale & Seby">🖼️ Album (6)</button>
       </div>
     </div>
 
@@ -486,11 +557,20 @@ const html = `<!DOCTYPE html>
           <span id="lbl-scene-caption" style="margin-left:6px;opacity:0.85;"></span>
         </div>
         <div style="display:flex;gap:5px;flex-shrink:0;">
-          <button class="kw-pill-btn" id="btn-peek" title="Tieni premuto o clicca per ammirare Ale e Seby sullo sfondo">👀 Foto</button>
+          <button class="kw-pill-btn" id="btn-peek" title="Clicca per ammirare Ale e Seby sullo sfondo">👀 Foto</button>
           <button class="kw-action-btn" id="btn-hint">💡 Aiuto</button>
           <button class="kw-action-btn" id="btn-solve-one" style="background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;">✨ Indovina 1</button>
           <button class="kw-pill-btn" id="btn-reset">🔄 Rigioca</button>
         </div>
+      </div>
+
+      <!-- ALBUM OVERLAY MODAL -->
+      <div class="kw-album-modal" id="kw-album-modal">
+        <div class="kw-album-header">
+          <span>🖼️ Galleria dei Ricordi di Ale & Seby (Clicca una scheda per giocarla!)</span>
+          <button class="kw-pill-btn" id="btn-album-close">✖ Chiudi</button>
+        </div>
+        <div class="kw-album-grid" id="kw-album-grid"></div>
       </div>
     </div>
   </div>
@@ -532,6 +612,7 @@ const html = `<!DOCTYPE html>
       isDragging = false;
       hintedCoords = [];
       document.getElementById('kw-stage').classList.remove('peeking');
+      document.getElementById('kw-album-modal').classList.remove('visible');
       document.getElementById('kw-comic-bubble').classList.remove('visible');
       document.getElementById('kw-current-word').classList.remove('visible');
       renderAll();
@@ -637,7 +718,6 @@ const html = `<!DOCTYPE html>
 
     function stepToTile(r, c) {
       if (!engine.isTileActive(r, c)) return;
-      // Allow backtracking to the immediately previous tile if the user reverses direction
       if (dragPath.length >= 2) {
         const [prevR, prevC] = dragPath[dragPath.length - 2];
         if (prevR === r && prevC === c) {
@@ -676,7 +756,6 @@ const html = `<!DOCTYPE html>
         svg.innerHTML = '';
         return;
       }
-      // 68px tile + 10px gap = 78px pitch, center at 34px
       const pts = dragPath.map(([r, c]) => {
         const x = c * 78 + 34;
         const y = r * 78 + 34;
@@ -724,10 +803,35 @@ const html = `<!DOCTYPE html>
       updateDragVisuals();
     }
 
+    function renderAlbum() {
+      const albumGrid = document.getElementById('kw-album-grid');
+      albumGrid.innerHTML = '';
+      LEVELS_IT.forEach((lvl) => {
+        const card = document.createElement('div');
+        card.className = 'kw-album-card';
+        const tierBadge = lvl.tier === 'seby' ? '🏎️ Seby 3×3' : '🐉 Ale 4×4';
+        card.innerHTML =
+          '<img src="' + (SCENES_IMG[lvl.scene_id] || SCENES_IMG.bees_meadow) + '" alt="' + lvl.theme + '"/>' +
+          '<div class="kw-album-card-caption">' +
+            '<div style="color:#fde68a;margin-bottom:2px;">' + tierBadge + ' · ' + lvl.theme + '</div>' +
+            '<div style="opacity:0.85;font-weight:600;">' + lvl.scene_caption + '</div>' +
+          '</div>';
+        card.addEventListener('click', () => {
+          currentTier = lvl.tier;
+          document.getElementById('btn-tier-seby').classList.toggle('active', currentTier === 'seby');
+          document.getElementById('btn-tier-ale').classList.toggle('active', currentTier === 'ale');
+          const tierLevels = getTierLevels();
+          currentIdx = tierLevels.findIndex(x => x.id === lvl.id);
+          if (currentIdx < 0) currentIdx = 0;
+          loadLevel();
+        });
+        albumGrid.appendChild(card);
+      });
+    }
+
     window.addEventListener('pointerup', finishSwipe);
     window.addEventListener('pointercancel', finishSwipe);
 
-    // Smooth pointermove hit-testing across tiles on desktop & touch devices
     document.getElementById('kw-grid-wrap').addEventListener('pointermove', (e) => {
       if (!isDragging) return;
       const el = document.elementFromPoint(e.clientX, e.clientY);
@@ -738,7 +842,6 @@ const html = `<!DOCTYPE html>
       stepToTile(r, c);
     });
 
-    // Profile & Navigation Buttons
     document.getElementById('btn-tier-seby').addEventListener('click', () => {
       currentTier = 'seby';
       currentIdx = 0;
@@ -765,6 +868,15 @@ const html = `<!DOCTYPE html>
       const levels = getTierLevels();
       currentIdx = (currentIdx + 1) % levels.length;
       loadLevel();
+    });
+
+    document.getElementById('btn-album').addEventListener('click', () => {
+      renderAlbum();
+      document.getElementById('kw-album-modal').classList.toggle('visible');
+    });
+
+    document.getElementById('btn-album-close').addEventListener('click', () => {
+      document.getElementById('kw-album-modal').classList.remove('visible');
     });
 
     document.getElementById('btn-peek').addEventListener('click', () => {

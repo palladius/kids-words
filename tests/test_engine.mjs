@@ -88,12 +88,10 @@ test('Phase 4: Immutable grid layout (no display:none shift on swipe/bubble, bot
   const cssBlock = html.slice(html.indexOf('<style>'), html.indexOf('</style>'));
   assert.ok(!cssBlock.includes('display: none'), 'CSS must not use display: none on swipe or comic elements');
 
-  // 4. All levels map to existing Nano Banana cartoon WebP assets
-  for (const level of LEVELS_IT) {
-    assert.ok(
-      ['bees_meadow', 'aquarium', 'dragon_forest', 'zurich_stars'].includes(level.scene_id),
-      `Unexpected scene_id ${level.scene_id} in ${level.id}`
-    );
-  }
+  // 4. All 6 levels map 1:1 to 6 unique Nano Banana cartoon WebP assets + Album modal exists
+  const expectedScenes = ['bees_meadow', 'alpine_sun', 'dragon_forest', 'aquarium', 'zurich_stars', 'knight_woods'];
+  const actualScenes = LEVELS_IT.map(l => l.scene_id);
+  assert.deepEqual(actualScenes, expectedScenes, 'Each of the 6 Italian levels must have its own unique cartoon scene');
+  assert.match(html, /id="kw-album-modal"/, 'Album dei Ricordi modal must be present');
 });
 
