@@ -4,19 +4,25 @@ import { KidsWordsEngine } from '../src/engine.mjs';
 import { LEVELS_IT } from '../src/levels_it.mjs';
 import { LevelProgression } from '../src/progression.mjs';
 
-test('Phase 1: All Italian levels have dense words (11-16 Seby, 20-24 Ale 3x4/3x5/4x4), sorted by length, ORTHOGONAL ONLY, and D(r,c) >= 1 invariant', () => {
-  assert.ok(LEVELS_IT.length >= 7, 'Should have at least 7 curated Italian levels (Seby + Ale)');
+test('Phase 1: All 10 Italian levels (Facile 3x3/3x4, Medio 3x4/3x5/4x4, Difficile 5x5/5x6/6x6), sorted by length, ORTHOGONAL ONLY, and D(r,c) >= 1 invariant', () => {
+  assert.ok(LEVELS_IT.length >= 10, 'Should have 10 curated Italian levels (Facile + Medio + Difficile Adult)');
   for (const level of LEVELS_IT) {
     const engine = new KidsWordsEngine(level);
-    if (level.tier === 'seby') {
+    if (level.tier === 'facile') {
       assert.ok(
         level.targets.length >= 11 && level.targets.length <= 16,
-        `Seby level ${level.id} must have 11-16 words, found ${level.targets.length}`
+        `Facile level ${level.id} must have 11-16 words, found ${level.targets.length}`
       );
-    } else {
+    } else if (level.tier === 'medio') {
       assert.ok(
         level.targets.length >= 20 && level.targets.length <= 24,
-        `Ale level ${level.id} must have 20-24 words, found ${level.targets.length}`
+        `Medio level ${level.id} must have 20-24 words, found ${level.targets.length}`
+      );
+    } else {
+      assert.equal(level.tier, 'difficile');
+      assert.ok(
+        level.targets.length >= 25 && level.targets.length <= 36,
+        `Difficile Adult level ${level.id} must have 25-36 words, found ${level.targets.length}`
       );
     }
 
@@ -108,6 +114,9 @@ test('Phase 4: Immutable grid layout, widescreen desktop media query, length-gro
   for (const level of LEVELS_IT) {
     assert.ok(expectedScenes.includes(level.scene_id), `Unexpected scene_id ${level.scene_id} in ${level.id}`);
   }
+  assert.match(html, /id="btn-tier-facile"/);
+  assert.match(html, /id="btn-tier-medio"/);
+  assert.match(html, /id="btn-tier-difficile"/);
   assert.match(html, /id="kw-album-modal"/, 'Album dei Ricordi modal must be present');
 });
 
@@ -193,7 +202,7 @@ test('Phase 6: Exhaustive Italian dictionary completeness (every Hunspell it_IT 
   }
 });
 
-test('Phase 7: PuffinLogin stateful level progression (Anon RAM-only vs Ale/Seby cross-device vs Papà Admin) & Footer version/GH link', async () => {
+test('Phase 7: Sadistic Login Gate on Level 2+ (Anon/Guest strictly locked to Level 1) + Ale/Seby/Papà Progression & Footer version/GH link', async () => {
   const fs = await import('node:fs');
   const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
   const html = fs.readFileSync(new URL('../public/index.html', import.meta.url), 'utf8');
@@ -206,45 +215,45 @@ test('Phase 7: PuffinLogin stateful level progression (Anon RAM-only vs Ale/Seby
   assert.ok(fs.existsSync(new URL('../public/src/puffin-login.js', import.meta.url)), 'puffin-login.js must exist in public/src/');
   assert.ok(fs.existsSync(new URL('../public/src/puffin-cards.js', import.meta.url)), 'puffin-cards.js must exist in public/src/');
 
-  // Mock localStorage
   const store = new Map();
   const mockStorage = {
     getItem: (k) => (store.has(k) ? store.get(k) : null),
     setItem: (k, v) => store.set(k, String(v)),
   };
 
-  const p1 = new LevelProgression({ totalByTier: { seby: 3, ale: 4 }, storage: mockStorage });
+  const p1 = new LevelProgression({ totalByTier: { facile: 3, medio: 4, difficile: 3 }, storage: mockStorage });
 
-  // 1. Anonymous starts at idx 0, unlocks idx 1 in RAM after winning level 1, resets on F5 (new instance)
-  assert.equal(p1.isLevelUnlocked(null, 'ale', 0), true);
-  assert.equal(p1.isLevelUnlocked(null, 'ale', 1), false);
-  p1.recordLevelCompleted(null, 'ale', 0);
-  assert.equal(p1.isLevelUnlocked(null, 'ale', 1), true);
-  assert.equal(p1.isLevelUnlocked('guest', 'ale', 1), false, 'Guest and null should not leak storage across sessions');
+  // 1. Sadistic Login Gate: Anonymous & Guest NEVER unlock Level 2+ even after winning Level 1!
+  assert.equal(p1.isLevelUnlocked(null, 'facile', 0), true);
+  assert.equal(p1.isLevelUnlocked(null, 'medio', 0), true);
+  assert.equal(p1.isLevelUnlocked(null, 'difficile', 0), true);
+  assert.equal(p1.isLevelUnlocked(null, 'medio', 1), false);
+  assert.equal(p1.recordLevelCompleted(null, 'medio', 0), 0);
+  assert.equal(p1.recordLevelCompleted('guest', 'facile', 0), 0);
+  assert.equal(p1.isLevelUnlocked(null, 'medio', 1), false, 'Anonymous MUST stay locked on Level 1 without login!');
+  assert.equal(p1.isLevelUnlocked('guest', 'facile', 1), false, 'Guest MUST stay locked on Level 1 without login!');
 
-  const pAfterF5 = new LevelProgression({ totalByTier: { seby: 3, ale: 4 }, storage: mockStorage });
-  assert.equal(pAfterF5.isLevelUnlocked(null, 'ale', 1), false, 'Anonymous MUST reset to Level 1 after F5!');
-
-  // 2. Ale wins Level 1 & Level 2 -> persists across F5, while Seby remains locked at Level 1!
-  pAfterF5.recordLevelCompleted('ale', 'ale', 0);
-  pAfterF5.recordLevelCompleted('ale', 'ale', 1);
-  const pNewSession = new LevelProgression({ totalByTier: { seby: 3, ale: 4 }, storage: mockStorage });
-  assert.equal(pNewSession.getUnlockedMaxIdx('ale', 'ale'), 2, 'Ale should have Level 3 (idx 2) unlocked after F5');
-  assert.equal(pNewSession.getUnlockedMaxIdx('seby', 'seby'), 0, 'Seby must still be at Level 1 (idx 0)');
-  assert.equal(pNewSession.isLevelUnlocked('seby', 'seby', 1), false);
+  // 2. Ale wins Level 1 & Level 2 on medio -> persists across F5, while Seby remains locked at Level 1!
+  p1.recordLevelCompleted('ale', 'medio', 0);
+  p1.recordLevelCompleted('ale', 'medio', 1);
+  const pNewSession = new LevelProgression({ totalByTier: { facile: 3, medio: 4, difficile: 3 }, storage: mockStorage });
+  assert.equal(pNewSession.getUnlockedMaxIdx('ale', 'medio'), 2, 'Ale should have Level 3 (idx 2) unlocked after F5');
+  assert.equal(pNewSession.getUnlockedMaxIdx('seby', 'facile'), 0, 'Seby must still be at Level 1 (idx 0)');
+  assert.equal(pNewSession.isLevelUnlocked('seby', 'facile', 1), false);
 
   // 3. Cross-device Cloud Firestore sync unlocks Ale on a fresh device (empty localStorage)
-  const freshDevice = new LevelProgression({ totalByTier: { seby: 3, ale: 4 }, storage: null });
-  assert.equal(freshDevice.getUnlockedMaxIdx('ale', 'ale'), 0);
+  const freshDevice = new LevelProgression({ totalByTier: { facile: 3, medio: 4, difficile: 3 }, storage: null });
+  assert.equal(freshDevice.getUnlockedMaxIdx('ale', 'medio'), 0);
   freshDevice.mergeCloudScores('ale', [
-    { player_id: 'ale', extra: { tier: 'ale', level_index: 2, unlocked_max_idx: 3 } },
-    { player_id: 'seby', extra: { tier: 'seby', level_index: 0, unlocked_max_idx: 1 } },
+    { player_id: 'ale', extra: { tier: 'medio', level_index: 2, unlocked_max_idx: 3 } },
+    { player_id: 'seby', extra: { tier: 'facile', level_index: 0, unlocked_max_idx: 1 } },
   ]);
-  assert.equal(freshDevice.getUnlockedMaxIdx('ale', 'ale'), 3, 'Ale should sync Level 4 (idx 3) from Cloud Firestore');
-  assert.equal(freshDevice.getUnlockedMaxIdx('seby', 'seby'), 0, 'Seby scores must NOT unlock Ale');
+  assert.equal(freshDevice.getUnlockedMaxIdx('ale', 'medio'), 3, 'Ale should sync Level 4 (idx 3) from Cloud Firestore');
+  assert.equal(freshDevice.getUnlockedMaxIdx('seby', 'facile'), 0, 'Seby scores must NOT unlock Ale');
 
-  // 4. Papà Admin (riccardo) has all levels unlocked
+  // 4. Papà Admin (riccardo) has all levels unlocked including Adult Difficile 6x6 Schemone
   assert.equal(freshDevice.isAdmin('riccardo'), true);
-  assert.equal(freshDevice.getUnlockedMaxIdx('riccardo', 'ale'), 3);
-  assert.equal(freshDevice.getUnlockedMaxIdx('riccardo', 'seby'), 2);
+  assert.equal(freshDevice.getUnlockedMaxIdx('riccardo', 'facile'), 2);
+  assert.equal(freshDevice.getUnlockedMaxIdx('riccardo', 'medio'), 3);
+  assert.equal(freshDevice.getUnlockedMaxIdx('riccardo', 'difficile'), 2);
 });

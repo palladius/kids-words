@@ -1,10 +1,10 @@
 /**
  * Stateful Level Progression Manager for Kids Words (Parole in Fuga).
  *
- * Rules:
+ * Rules (Strict PuffinLogin Gate on Level 2+):
  * - Anonymous / Guest (`!userId || userId === 'guest'`):
- *   RAM-only session progress (`{ seby: 0, ale: 0 }`). Winning Level 1 unlocks Level 2
- *   for the current session, but refreshing (F5) or opening another browser resets to Level 1 (idx 0).
+ *   Locked to Level 1 (`idx === 0`) ONLY! Even after completing Level 1, Level 2+
+ *   remains locked (`🔒`) until the player logs in with a named PuffinLogin profile.
  * - Authenticated Kids / Family (`ale`, `seby`, `kate`, `lucilla`):
  *   Persistent per-user progress backed by localStorage AND Cloud Firestore (`extra.unlocked_max_idx`).
  *   Winning Level `i` unlocks `i + 1`. Ale's and Seby's progression remain strictly isolated.
@@ -12,10 +12,9 @@
  *   Full debug access: all levels unlocked and admin solve-assist enabled.
  */
 export class LevelProgression {
-  constructor({ totalByTier = { seby: 3, ale: 4 }, storage = null } = {}) {
+  constructor({ totalByTier = { facile: 3, medio: 4, difficile: 3 }, storage = null } = {}) {
     this.totalByTier = { ...totalByTier };
     this.storage = storage;
-    this.ramAnon = new Map(); // key `${userId || 'anon'}:${tier}` -> maxIdx
     this.cloudCache = new Map(); // key `${userId}:${tier}` -> maxIdx
   }
 
@@ -36,8 +35,9 @@ export class LevelProgression {
     if (this.isAdmin(userId)) {
       return maxTierIdx;
     }
+    // Sadistic gate: anonymous & guest players NEVER unlock Level 2+ without logging in!
     if (!this.isPersistentUser(userId)) {
-      return Math.min(maxTierIdx, this.ramAnon.get(`${userId || 'anon'}:${tier}`) || 0);
+      return 0;
     }
     let stored = 0;
     if (this.storage) {
@@ -59,20 +59,17 @@ export class LevelProgression {
   }
 
   recordLevelCompleted(userId, tier, completedIdx) {
-    const maxTierIdx = Math.max(0, (this.totalByTier[tier] || 1) - 1);
-    const nextUnlocked = Math.min(maxTierIdx, Math.max(0, Number(completedIdx) + 1));
-
+    // Anonymous / Guest cannot unlock Level 2+ without logging in
     if (!this.isPersistentUser(userId)) {
-      const k = `${userId || 'anon'}:${tier}`;
-      const val = Math.max(this.ramAnon.get(k) || 0, nextUnlocked);
-      this.ramAnon.set(k, val);
-      return val;
+      return 0;
     }
 
+    const maxTierIdx = Math.max(0, (this.totalByTier[tier] || 1) - 1);
     if (this.isAdmin(userId)) {
       return maxTierIdx;
     }
 
+    const nextUnlocked = Math.min(maxTierIdx, Math.max(0, Number(completedIdx) + 1));
     const currentMax = this.getUnlockedMaxIdx(userId, tier);
     const updatedMax = Math.max(currentMax, nextUnlocked);
     this.cloudCache.set(`${userId}:${tier}`, updatedMax);
@@ -107,7 +104,6 @@ export class LevelProgression {
         this.cloudCache.set(key, candidate);
       }
     }
-    // Persist merged high-water mark to localStorage as well
     if (this.storage) {
       try {
         const key = LevelProgression.storageKey(userId);

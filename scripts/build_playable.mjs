@@ -493,13 +493,13 @@ const html = `<!DOCTYPE html>
         padding-top: 6px;
       }
       .kw-stage {
-        height: 700px;
-        min-height: 700px;
-        max-height: 700px;
+        height: 726px;
+        min-height: 726px;
+        max-height: 726px;
         padding: 16px;
         gap: 10px 18px;
-        grid-template-columns: 1.22fr 0.78fr;
-        grid-template-rows: 166px 34px 306px 74px 44px;
+        grid-template-columns: 1.24fr 0.76fr;
+        grid-template-rows: 192px 34px 306px 74px 44px;
         grid-template-areas:
           "hud   swipe"
           "hud   grid"
@@ -518,12 +518,12 @@ const html = `<!DOCTYPE html>
         flex-wrap: wrap;
         align-items: flex-start;
         align-content: flex-start;
-        gap: 6px 12px;
+        gap: 5px 10px;
         overflow: visible;
       }
       .kw-len-group {
         border-right: 1px solid rgba(255, 255, 255, 0.2);
-        padding-right: 10px;
+        padding-right: 9px;
         gap: 4px 5px;
       }
       .kw-grid-slot {
@@ -688,8 +688,9 @@ const html = `<!DOCTYPE html>
   <div class="kw-root">
     <div class="kw-topbar">
       <div class="kw-profiles">
-        <button class="kw-profile-btn active" data-tier="seby" id="btn-tier-seby">🏎️ Seby (3×3/3×4)</button>
-        <button class="kw-profile-btn" data-tier="ale" id="btn-tier-ale">🐉 Ale / Sfida (3×4 · 3×5 · 4×4)</button>
+        <button class="kw-profile-btn active" data-tier="facile" id="btn-tier-facile">🐣 Bimbo / Facile</button>
+        <button class="kw-profile-btn" data-tier="medio" id="btn-tier-medio">🐉 Ragazzo / Medio</button>
+        <button class="kw-profile-btn" data-tier="difficile" id="btn-tier-difficile">🧠 Adulto / Difficile</button>
       </div>
       <div class="kw-level-nav">
         <button class="kw-pill-btn" id="btn-prev-lvl" title="Livello precedente">◀</button>
@@ -808,19 +809,22 @@ const html = `<!DOCTYPE html>
 
     const progression = new LevelProgression({
       totalByTier: {
-        seby: LEVELS_IT.filter(l => l.tier === 'seby').length,
-        ale: LEVELS_IT.filter(l => l.tier === 'ale').length,
+        facile: LEVELS_IT.filter(l => l.tier === 'facile').length,
+        medio: LEVELS_IT.filter(l => l.tier === 'medio').length,
+        difficile: LEVELS_IT.filter(l => l.tier === 'difficile').length,
       },
       storage: typeof window !== 'undefined' ? window.localStorage : null,
     });
 
-    let currentTier = 'seby';
+    let currentTier = 'facile';
     let currentIdx = 0;
     let engine = null;
     let dragPath = [];
     let isDragging = false;
     let hintedCoords = [];
     let levelStartedAt = new Date().toISOString();
+    let currentTilePx = 62;
+    let currentGapPx = 8;
 
     function getActiveUser() {
       try {
@@ -833,6 +837,21 @@ const html = `<!DOCTYPE html>
     function getActiveUserId() {
       const u = getActiveUser();
       return u ? u.id : null;
+    }
+
+    function openLoginGate() {
+      try {
+        const w = document.getElementById('puffin-widget');
+        if (w && typeof w.openModal === 'function') w.openModal({ tab: 'login' });
+      } catch {}
+    }
+
+    function setTier(tier) {
+      currentTier = tier;
+      currentIdx = 0;
+      document.getElementById('btn-tier-facile').classList.toggle('active', tier === 'facile');
+      document.getElementById('btn-tier-medio').classList.toggle('active', tier === 'medio');
+      document.getElementById('btn-tier-difficile').classList.toggle('active', tier === 'difficile');
     }
 
     function getTierLevels() {
@@ -893,22 +912,45 @@ const html = `<!DOCTYPE html>
       const uid = getActiveUserId();
       const user = getActiveUser();
       const isAdmin = progression.isAdmin(uid);
+      const isPersistent = progression.isPersistentUser(uid);
       const maxUnlocked = progression.getUnlockedMaxIdx(uid, currentTier);
+
+      // Adaptive tile sizing so 3x3..6x6 grids fit crisply inside the immutable grid slot!
+      const maxDim = Math.max(lvl.grid.rows, lvl.grid.cols);
+      if (maxDim >= 6) {
+        currentTilePx = 46;
+        currentGapPx = 6;
+      } else if (maxDim === 5 && lvl.grid.rows === 5) {
+        currentTilePx = 54;
+        currentGapPx = 6;
+      } else if (maxDim === 5) {
+        currentTilePx = 58;
+        currentGapPx = 7;
+      } else {
+        currentTilePx = 62;
+        currentGapPx = 8;
+      }
+      const gridWrap = document.getElementById('kw-grid-wrap');
+      gridWrap.style.setProperty('--tile', currentTilePx + 'px');
+      gridWrap.style.setProperty('--gap', currentGapPx + 'px');
 
       // Update level counter & lock indicator
       const lockStatus = isAdmin
         ? '👑'
-        : (maxUnlocked >= levels.length - 1 ? '🔓' : '🔒 ' + (maxUnlocked + 1) + '/' + levels.length);
+        : (!isPersistent
+            ? '🔒 Login per Liv. 2+'
+            : (maxUnlocked >= levels.length - 1 ? '🔓' : '🔒 ' + (maxUnlocked + 1) + '/' + levels.length));
       document.getElementById('lbl-level-idx').textContent =
         'Livello ' + (currentIdx + 1) + ' / ' + levels.length + ' (' + lockStatus + ')';
 
       const prevBtn = document.getElementById('btn-prev-lvl');
       const nextBtn = document.getElementById('btn-next-lvl');
       prevBtn.disabled = currentIdx <= 0 && !isAdmin;
-      nextBtn.disabled = currentIdx >= maxUnlocked && !isAdmin;
-      nextBtn.title = nextBtn.disabled
-        ? 'Completa questo livello per sbloccare il prossimo!'
-        : 'Livello successivo';
+      // Keep nextBtn clickable if anonymous so clicking it can prompt Login!
+      nextBtn.disabled = isPersistent && currentIdx >= maxUnlocked && !isAdmin;
+      nextBtn.title = !isPersistent
+        ? 'Fai Login in alto a destra per sbloccare il Livello 2+!'
+        : (nextBtn.disabled ? 'Completa questo livello per sbloccare il prossimo!' : 'Livello successivo');
 
       // Papà Debug button ONLY visible to riccardo!
       const solveOneBtn = document.getElementById('btn-solve-one');
@@ -918,10 +960,10 @@ const html = `<!DOCTYPE html>
       const progEl = document.getElementById('lbl-progress-badge');
       if (isAdmin) {
         progEl.textContent = '👑 Papà Debug (tutti sbloccati)';
-      } else if (user && user.id !== 'guest') {
+      } else if (isPersistent && user) {
         progEl.textContent = '🐧 ' + user.shortName + ' · Sbloccati: ' + (maxUnlocked + 1) + '/' + levels.length;
       } else {
-        progEl.textContent = '👤 Anonimo (solo sessione · F5 resetta)';
+        progEl.textContent = '👤 Anonimo · 🔒 Liv. 2+ richiede Login';
       }
 
       document.getElementById('lbl-theme').textContent = lvl.theme;
@@ -1075,10 +1117,11 @@ const html = `<!DOCTYPE html>
         svg.innerHTML = '';
         return;
       }
-      // 62px tile + 8px gap = 70px pitch, center at 31px
+      const pitch = currentTilePx + currentGapPx;
+      const half = currentTilePx / 2;
       const pts = dragPath.map(([r, c]) => {
-        const x = c * 70 + 31;
-        const y = r * 70 + 31;
+        const x = c * pitch + half;
+        const y = r * pitch + half;
         return x + ',' + y;
       }).join(' ');
       svg.innerHTML = '<polyline points="' + pts + '" fill="none" stroke="#f59e0b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.88"/>';
@@ -1104,19 +1147,20 @@ const html = `<!DOCTYPE html>
           showComicBubble(t.emoji, t.word, t.explanation_text, 'Parola Ostica ' + t.cefr);
           speakItalian(t.word + '! ' + t.explanation_text);
         } else {
-          showComicBubble(t.emoji || '🌟', t.word + '!', 'Ottimo colpo! Le lettere esaurite scompaiono svelando Ale e Seby!', 'Parola Base ' + t.cefr);
+          showComicBubble(t.emoji || '🌟', t.word + '!', 'Ottimo colpo! Le lettere esaurite scompaiono svelando lo sfondo!', 'Parola Base ' + t.cefr);
           speakItalian(t.word + '!');
         }
         if (res.isLevelComplete) {
           const uid = getActiveUserId();
+          const isPersistent = progression.isPersistentUser(uid);
           const newMaxUnlocked = progression.recordLevelCompleted(uid, currentTier, currentIdx);
-          const kidName = getActiveUser()?.shortName || (currentTier === 'seby' ? 'Seby' : 'Ale');
+          const kidName = getActiveUser()?.shortName || 'Campione';
           const levels = getTierLevels();
           const hasNext = currentIdx + 1 < levels.length;
 
           // Persist score + unlocked level index to Cloud Firestore via PuffinLogin
           try {
-            if (window.PuffinLogin && progression.isPersistentUser(uid)) {
+            if (window.PuffinLogin && isPersistent) {
               const endedAt = new Date().toISOString();
               const durationSec = Math.max(5, Math.round((Date.parse(endedAt) - Date.parse(levelStartedAt)) / 1000));
               const score = engine.level.targets.length * 100 + engine.bonusWordsFound.size * 25 + (currentIdx + 1) * 50;
@@ -1144,11 +1188,17 @@ const html = `<!DOCTYPE html>
           if (hof) hof.hidden = false;
 
           setTimeout(() => {
-            const unlockMsg = hasNext
-              ? 'Livello ' + (currentIdx + 2) + ' sbloccato! Premi ▶ in alto per continuare!'
-              : 'Hai completato tutti i livelli di questa modalità!';
-            showComicBubble('🎉', 'Quadro Svelato, bravo ' + kidName + '!', unlockMsg, 'Livello Completato');
-            speakItalian('Evviva ' + kidName + '! ' + unlockMsg);
+            if (!isPersistent) {
+              const gateMsg = '🔒 Livello 2 bloccato per gli anonimi! Fai Login in alto a destra (🔐 Login) per sbloccare il Livello 2!';
+              showComicBubble('🔐', 'Quadro Svelato! Ora fai Login!', gateMsg, 'Login Richiesto');
+              speakItalian('Bravissimo! Ma per andare al livello 2 devi fare login!');
+            } else {
+              const unlockMsg = hasNext
+                ? 'Livello ' + (currentIdx + 2) + ' sbloccato! Premi ▶ in alto per continuare!'
+                : 'Hai completato tutti i livelli di questa modalità!';
+              showComicBubble('🎉', 'Quadro Svelato, bravo ' + kidName + '!', unlockMsg, 'Livello Completato');
+              speakItalian('Evviva ' + kidName + '! ' + unlockMsg);
+            }
           }, 900);
         }
       } else if (res.status === 'bonus_word') {
@@ -1178,18 +1228,25 @@ const html = `<!DOCTYPE html>
       chipsEl.innerHTML = found.map(w => '<span class="kw-treasure-chip">🍪 ' + w + '</span>').join('');
     }
 
+    function tierDisplayName(tier) {
+      if (tier === 'facile') return '🐣 Facile';
+      if (tier === 'medio') return '🐉 Medio';
+      return '🧠 Adulto';
+    }
+
     function renderAlbum() {
       const albumGrid = document.getElementById('kw-album-grid');
       albumGrid.innerHTML = '';
       const uid = getActiveUserId();
+      const isPersistent = progression.isPersistentUser(uid);
       LEVELS_IT.forEach((lvl) => {
         const tierLevels = LEVELS_IT.filter(x => x.tier === lvl.tier);
         const idxInTier = tierLevels.findIndex(x => x.id === lvl.id);
         const unlocked = progression.isLevelUnlocked(uid, lvl.tier, idxInTier);
         const card = document.createElement('div');
         card.className = 'kw-album-card' + (unlocked ? '' : ' locked');
-        const tierBadge = lvl.tier === 'seby' ? '🏎️ Seby' : '🐉 Ale';
-        const lockLabel = unlocked ? '🔓 Sbloccato' : '🔒 Bloccato';
+        const tierBadge = tierDisplayName(lvl.tier);
+        const lockLabel = unlocked ? '🔓 Sbloccato' : (isPersistent ? '🔒 Bloccato' : '🔐 Richiede Login');
         card.innerHTML =
           '<img src="' + (SCENES_IMG[lvl.scene_id] || SCENES_IMG.bees_meadow) + '" alt="' + lvl.theme + '"/>' +
           '<div class="kw-album-card-caption">' +
@@ -1198,13 +1255,16 @@ const html = `<!DOCTYPE html>
           '</div>';
         card.addEventListener('click', () => {
           if (!unlocked) {
-            showComicBubble('🔒', 'Livello Bloccato!', 'Completa prima i livelli precedenti per sbloccare "' + lvl.theme + '"!', 'Bloccato');
             document.getElementById('kw-album-modal').classList.remove('visible');
+            if (!isPersistent) {
+              showComicBubble('🔐', 'Login Richiesto!', 'Per accedere al Livello 2+ devi fare Login in alto a destra!', 'Login Richiesto');
+              openLoginGate();
+            } else {
+              showComicBubble('🔒', 'Livello Bloccato!', 'Completa prima i livelli precedenti per sbloccare "' + lvl.theme + '"!', 'Bloccato');
+            }
             return;
           }
-          currentTier = lvl.tier;
-          document.getElementById('btn-tier-seby').classList.toggle('active', currentTier === 'seby');
-          document.getElementById('btn-tier-ale').classList.toggle('active', currentTier === 'ale');
+          setTier(lvl.tier);
           currentIdx = idxInTier >= 0 ? idxInTier : 0;
           loadLevel();
         });
@@ -1225,19 +1285,18 @@ const html = `<!DOCTYPE html>
       stepToTile(r, c);
     });
 
-    document.getElementById('btn-tier-seby').addEventListener('click', () => {
-      currentTier = 'seby';
-      currentIdx = 0;
-      document.getElementById('btn-tier-seby').classList.add('active');
-      document.getElementById('btn-tier-ale').classList.remove('active');
+    document.getElementById('btn-tier-facile').addEventListener('click', () => {
+      setTier('facile');
       loadLevel();
     });
 
-    document.getElementById('btn-tier-ale').addEventListener('click', () => {
-      currentTier = 'ale';
-      currentIdx = 0;
-      document.getElementById('btn-tier-ale').classList.add('active');
-      document.getElementById('btn-tier-seby').classList.remove('active');
+    document.getElementById('btn-tier-medio').addEventListener('click', () => {
+      setTier('medio');
+      loadLevel();
+    });
+
+    document.getElementById('btn-tier-difficile').addEventListener('click', () => {
+      setTier('difficile');
       loadLevel();
     });
 
@@ -1256,10 +1315,14 @@ const html = `<!DOCTYPE html>
     document.getElementById('btn-next-lvl').addEventListener('click', () => {
       const levels = getTierLevels();
       const uid = getActiveUserId();
+      const isPersistent = progression.isPersistentUser(uid);
       const maxUnlocked = progression.getUnlockedMaxIdx(uid, currentTier);
       if (progression.isAdmin(uid)) {
         currentIdx = (currentIdx + 1) % levels.length;
         loadLevel();
+      } else if (!isPersistent) {
+        showComicBubble('🔐', 'Login Richiesto!', 'Per passare al Livello 2 devi prima fare Login (🔐 Login) in alto a destra!', 'Solo Utenti Registrati');
+        openLoginGate();
       } else if (currentIdx + 1 <= maxUnlocked && currentIdx + 1 < levels.length) {
         currentIdx += 1;
         loadLevel();
@@ -1305,7 +1368,7 @@ const html = `<!DOCTYPE html>
       const unsolved = engine.getUnsolvedTargets();
       if (!unsolved.length) return;
       const next = unsolved[0];
-      hintedCoords = currentTier === 'seby' ? next.path.slice(0, 2) : next.path.slice(0, 1);
+      hintedCoords = currentTier === 'facile' ? next.path.slice(0, 2) : next.path.slice(0, 1);
       renderAll();
     });
 
@@ -1326,10 +1389,12 @@ const html = `<!DOCTYPE html>
 
     async function syncUserCloudProgression(user) {
       if (!user) return;
-      if (user.id === 'ale' || user.id === 'seby') {
-        currentTier = user.id;
-        document.getElementById('btn-tier-seby').classList.toggle('active', currentTier === 'seby');
-        document.getElementById('btn-tier-ale').classList.toggle('active', currentTier === 'ale');
+      if (user.id === 'seby') {
+        setTier('facile');
+      } else if (user.id === 'ale') {
+        setTier('medio');
+      } else if (user.id === 'riccardo' || user.id === 'kate' || user.id === 'lucilla') {
+        setTier('difficile');
       }
       if (window.PuffinLogin && progression.isPersistentUser(user.id)) {
         try {
@@ -1352,7 +1417,13 @@ const html = `<!DOCTYPE html>
       }
     });
 
-    // Initial boot + wait briefly for puffin-login custom element upgrade
+    // Initial boot (supports ?tier=facile|medio|difficile permalink) + wait briefly for puffin-login upgrade
+    try {
+      const qpTier = new URLSearchParams(window.location.search).get('tier');
+      if (qpTier && ['facile', 'medio', 'difficile'].includes(qpTier)) {
+        setTier(qpTier);
+      }
+    } catch {}
     loadLevel();
     setTimeout(() => {
       const u = getActiveUser();

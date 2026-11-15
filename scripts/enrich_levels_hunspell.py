@@ -2,7 +2,7 @@
 """
 Adversarial Lexicon Verifier & Level Enricher for Kids Words.
 Uses LibreOffice it_IT Hunspell dictionary (via spylls) to:
-1. Enumerate 100% of valid Italian words (3..7 letters) reachable by orthogonal swipe on every grid.
+1. Enumerate 100% of valid Italian words (3..6/7 letters) reachable by orthogonal swipe on every grid.
 2. Export data/it_grid_lexicon.json as the ground-truth lexicon for unit tests (Phase 6).
 3. Populate every level's `bonus_words` (Treasure Trove / Biscottiera) with ALL valid Italian words
    not already in `targets`, ensuring no player can find a real Italian word that gets rejected!
@@ -32,6 +32,7 @@ if not AFF_PATH.exists():
     )
 
 CURATED_META = {
+    # Base A1/A2 words
     "APE": ("A1", "🐝", None),
     "PANE": ("A1", "🥖", None),
     "RANA": ("A1", "🐸", None),
@@ -72,6 +73,7 @@ CURATED_META = {
     "TREMA": ("A2", "🥶", None),
     "VELOCE": ("A1", "⚡", None),
     "COLORA": ("A1", "🎨", None),
+    "COLORE": ("A1", "🎨", None),
     "COLORI": ("A1", "🌈", None),
     "LORO": ("A1", "👥", None),
     "CIMA": ("A2", "🏔️", None),
@@ -95,8 +97,19 @@ CURATED_META = {
     "SANE": ("A2", "💪", None),
     "ORSA": ("A2", "🐻", None),
     "ORSO": ("A1", "🐻", None),
+    "STELLA": ("A1", "⭐", None),
+    "STORIA": ("A1", "📖", None),
+    "STORIE": ("A1", "📚", None),
+    "PIANO": ("A1", "🎹", None),
+    "MOTORI": ("A2", "🏎️", None),
+    "MONTA": ("A2", "🏔️", None),
+    "COLLE": ("A2", "⛰️", None),
+    "MORTO": ("A2", "💀", None),
+    "CASTE": ("A2", "🏰", None),
+    "ALONE": ("A2", "🌕", None),
+    "ASILO": ("A1", "🏫", None),
 
-    # Rich B1 / B2 / C1 vocabulary
+    # Rich B1 / B2 / C1 vocabulary (including Adult Schemone words!)
     "ARNIA": ("B2", "🍯", "L'arnia è la casetta di legno dove vivono le api e preparano il miele!"),
     "AIA": ("B2", "🏡", "L'aia è il grande cortile davanti alla fattoria dove razzolano le galline!"),
     "ARA": ("B2", "🦜", "L'ara è un grande pappagallo tropicale dalle piume rosse, gialle e blu!"),
@@ -149,6 +162,46 @@ CURATED_META = {
     "PARA": ("A2", "🧤", None),
     "PARE": ("B1", "🤔", "Pare significa 'sembra', quando qualcosa assomiglia a qualcos'altro!"),
     "ECO": ("B1", "🏔️", "L'eco è la voce della montagna che ti ripete le parole quando gridi!"),
+    "COMETA": ("B1", "☄️", "La cometa è una palla di ghiaccio e polvere spaziale con una lunga coda luminosa!"),
+    "CORONA": ("A2", "👑", None),
+    "CORONE": ("A2", "👑", None),
+    "CORALE": ("B2", "🎼", "Corale significa cantato insieme da tante voci in perfetta armonia!"),
+    "MORALE": ("B2", "⚖️", "La morale è l'insegnamento prezioso nascosto alla fine di una favola!"),
+    "CAROLA": ("C1", "💃", "La carola è un'antica danza in cerchio accompagnata dal canto popolare!"),
+    "CAROLE": ("C1", "💃", "Le carole sono antiche danze medievali ballate tenendosi per mano in cerchio!"),
+    "CASONE": ("B2", "🏚️", "Il casone è una grande casa rurale tipica delle campagne venete e padane!"),
+    "MALORA": ("B2", "🌪️", "Andare in malora significa rovinarsi del tutto o finire in gran disordine!"),
+    "AMENA": ("C1", "🌿", "Amena indica una località o una storia piacevole, serena e rilassante!"),
+    "ANELA": ("C1", "✨", "Anela significa desidera con tutto il cuore di raggiungere un grande sogno!"),
+    "ASOLA": ("B2", "🪡", "L'asola è il piccolo occhiello cucito nella stoffa per far passare il bottone!"),
+    "ACORO": ("C1", "🪴", "L'acoro è una pianta acquatica profumata che cresce vicino ai laghi!"),
+    "PIRATE": ("B1", "🏴‍☠️", "Le pirate sono coraggiose navigatrici dei mari a caccia di mappe e tesori!"),
+    "ORMONE": ("B2", "🧬", "L'ormone è un messaggero chimico che coordina crescita ed energia nel corpo!"),
+    "ONESTI": ("B1", "🤝", "Onesti sono le persone sincere, giuste e leali che dicono la verità!"),
+    "ONORE": ("B1", "🏅", "L'onore è il rispetto profondo conquistato agendo con coraggio e lealtà!"),
+    "OTARIA": ("B2", "🦭", "L'otaria è un mammifero marino agile e giocherellone simile alla foca!"),
+    "EREMI": ("C1", "⛰️", "Gli eremi sono luoghi silenziosi e solitari in montagna dove trovare pace!"),
+    "RESTIA": ("C1", "🐴", "Restia descrive chi esita o fatica a farsi convincere prima di fare qualcosa!"),
+    "RETORE": ("C1", "🎙️", "Il retore era nell'antichità il maestro nell'arte di parlare in pubblico!"),
+    "ASTORI": ("C1", "🦅", "Gli astori sono maestosi rapaci dei boschi dal volo rapido e silenzioso!"),
+    "LAVINA": ("B2", "❄️", "La lavina è una grande massa di neve che scivola giù dai pendii alpini (valanga)!"),
+    "MASTRO": ("B2", "🛠️", "Mastro è il titolo di un esperto artigiano o capobottega di grande abilità!"),
+    "NIVALE": ("C1", "🌨️", "Nivale è tutto ciò che appartiene alla neve, al clima alpino e alle alte vette!"),
+    "ROVINA": ("B1", "🏛️", "Le rovine sono i resti antichi di castelli, templi o città di secoli fa!"),
+    "SERALE": ("B1", "🌆", "Serale indica tutto ciò che accade di sera, al tramonto o sotto le prime stelle!"),
+    "STORNI": ("B2", "🐦", "Gli storni sono uccelli che volano in stormi acrobatici disegnando onde nel cielo!"),
+    "STROMA": ("C1", "🔬", "In biologia lo stroma è la struttura di sostegno interna di organi e cloroplasti!"),
+    "TORNIO": ("B2", "⚙️", "Il tornio è la macchina rotante che modella legno, ceramica o metallo!"),
+    "TRENTA": ("A1", "3️⃣0️⃣", None),
+    "ROMANI": ("A2", "🏛️", None),
+    "ROTOLO": ("A2", "📜", None),
+    "ASTRO": ("B2", "🌟", "Un astro è qualsiasi corpo celeste luminoso nel cielo, come stelle e pianeti!"),
+    "NENIA": ("C1", "🎶", "La nenia è una melodia lenta e ripetitiva, come un'antica ninna nanna!"),
+    "OVALE": ("A2", "🥚", None),
+    "SARTO": ("B1", "🧵", "Il sarto è l'artigiano che taglia e cuce abiti su misura!"),
+    "SCOLO": ("B2", "💧", "Lo scolo è il canale o condotto attraverso cui defluisce l'acqua piovana!"),
+    "ORALE": ("B1", "🗣️", "Orale significa espresso a voce, parlando invece di scrivere!"),
+    "AVOLO": ("C1", "👴", "Avolo è una parola antica e letteraria per indicare il nonno o un antenato!"),
 }
 
 ROMAN_OR_ACRONYM = {
@@ -156,13 +209,77 @@ ROMAN_OR_ACRONYM = {
     "PIN", "RAM", "ROM", "RAN", "AAA", "MMM", "CCC", "OOO", "EEE", "SSS"
 }
 
-def all_paths_words(grid):
+ADULT_LEVELS = [
+    {
+        "id": "it_adulto_001",
+        "tier": "difficile",
+        "theme": "🔭 La Cometa del Castoro (5×5 · 26 Parole)",
+        "scene_id": "zurich_stars",
+        "scene_caption": "Ale, Seby e Papà osservano la cometa sopra i tetti di Zurigo!",
+        "grid": {
+            "rows": 5,
+            "cols": 5,
+            "initial_letters": [
+                ["C", "A", "S", "T", "E"],
+                ["O", "R", "O", "N", "A"],
+                ["M", "A", "L", "E", "R"],
+                ["E", "T", "I", "R", "O"],
+                ["N", "A", "S", "C", "E"],
+            ],
+        },
+        "targets": [],
+        "bonus_words": [],
+    },
+    {
+        "id": "it_adulto_002",
+        "tier": "difficile",
+        "theme": "✨ L'Osservatorio delle Stelle (5×6 · 28 Parole)",
+        "scene_id": "alpine_sun",
+        "scene_caption": "Sfida stellare tra le vette svizzere con Ghigna e Pupurabbu!",
+        "grid": {
+            "rows": 5,
+            "cols": 6,
+            "initial_letters": [
+                ["S", "T", "E", "L", "L", "A"],
+                ["P", "I", "A", "N", "O", "R"],
+                ["A", "R", "M", "O", "N", "E"],
+                ["T", "O", "R", "N", "A", "S"],
+                ["E", "R", "E", "M", "I", "T"],
+            ],
+        },
+        "targets": [],
+        "bonus_words": [],
+    },
+    {
+        "id": "it_adulto_003",
+        "tier": "difficile",
+        "theme": "🏔️ La Grande Storia Alpina (6×6 · Schemone Papà!)",
+        "scene_id": "dragon_forest",
+        "scene_caption": "Lo Schemone Finale 6×6 di Papà nella foresta magica!",
+        "grid": {
+            "rows": 6,
+            "cols": 6,
+            "initial_letters": [
+                ["M", "O", "N", "T", "A", "R"],
+                ["A", "R", "E", "N", "I", "O"],
+                ["S", "T", "O", "R", "I", "A"],
+                ["C", "O", "L", "L", "E", "R"],
+                ["A", "M", "O", "R", "E", "S"],
+                ["N", "I", "V", "A", "L", "E"],
+            ],
+        },
+        "targets": [],
+        "bonus_words": [],
+    },
+]
+
+def all_paths_words(grid, max_len=6):
     rows, cols = len(grid), len(grid[0])
     paths = {}
     def dfs(r, c, path, w):
-        if 3 <= len(w) <= 7 and w not in paths:
+        if 3 <= len(w) <= max_len and w not in paths:
             paths[w] = list(path)
-        if len(w) >= 7:
+        if len(w) >= max_len:
             return
         for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:
             nr, nc = r + dr, c + dc
@@ -179,7 +296,16 @@ def main():
     d = Dictionary.from_files(str(CACHE_DIR / "it_IT"))
     levels_path = ROOT / "src" / "levels_it.mjs"
     raw = levels_path.read_text(encoding="utf-8")
-    levels = json.loads(raw[raw.index("["):raw.rindex("]") + 1])
+    existing_levels = json.loads(raw[raw.index("["):raw.rindex("]") + 1])
+
+    # Keep the 7 facile/medio levels & replace any old difficile levels with our 3 adult schemoni
+    base_levels = [l for l in existing_levels if l.get("tier") not in ("difficile", "adulto")]
+    for l in base_levels:
+        if l["tier"] == "seby":
+            l["tier"] = "facile"
+        elif l["tier"] == "ale":
+            l["tier"] = "medio"
+    levels = base_levels + ADULT_LEVELS
 
     desired_counts = {
         "it_seby_001": 11,
@@ -189,6 +315,9 @@ def main():
         "it_ale_002": 22,
         "it_ale_003": 24,
         "it_ale_004": 24,
+        "it_adulto_001": 26,
+        "it_adulto_002": 28,
+        "it_adulto_003": 32,
     }
     cefr_rank = {"C1": 5, "B2": 4, "B1": 3, "A2": 2, "A1": 1}
 
@@ -199,11 +328,13 @@ def main():
         lid = lvl["id"]
         grid = lvl["grid"]["initial_letters"]
         rows, cols = len(grid), len(grid[0])
-        all_paths = all_paths_words(grid)
+        max_word_len = 6 if (rows * cols >= 25) else 7
+        all_paths = all_paths_words(grid, max_len=max_word_len)
 
         valid_words = {}
+        vowels = set("AEIOU")
         for w, p in all_paths.items():
-            if w in ROMAN_OR_ACRONYM:
+            if w in ROMAN_OR_ACRONYM or not any(ch in vowels for ch in w):
                 continue
             if d.lookup(w.lower()):
                 valid_words[w] = p
@@ -214,12 +345,19 @@ def main():
         chosen = []
         covered = set()
 
+        # Greedy set cover: always maximize newly covered cells across ALL valid_words (preferring curated on ties)
         for _ in range(rows * cols):
             if len(covered) == rows * cols:
                 break
+            pool = [w for w in valid_words if w not in chosen]
             best_w = max(
-                [w for w in curated if w not in chosen],
-                key=lambda w: (len(set(map(tuple, valid_words[w])) - covered), len(w), cefr_rank[CURATED_META[w][0]]),
+                pool,
+                key=lambda w: (
+                    len(set(map(tuple, valid_words[w])) - covered),
+                    1 if w in CURATED_META else 0,
+                    len(w),
+                    cefr_rank.get(CURATED_META[w][0], 3) if w in CURATED_META else 2,
+                ),
                 default=None,
             )
             if best_w:
@@ -228,16 +366,19 @@ def main():
 
         target_n = desired_counts.get(lid, 20)
         by_len = {
-            5: sorted([w for w in curated if len(w) >= 5 and w not in chosen], key=lambda w: (len(w), cefr_rank[CURATED_META[w][0]], w), reverse=True),
+            6: sorted([w for w in curated if len(w) >= 6 and w not in chosen], key=lambda w: (len(w), cefr_rank[CURATED_META[w][0]], w), reverse=True),
+            5: sorted([w for w in curated if len(w) == 5 and w not in chosen], key=lambda w: (cefr_rank[CURATED_META[w][0]], w), reverse=True),
             4: sorted([w for w in curated if len(w) == 4 and w not in chosen], key=lambda w: (cefr_rank[CURATED_META[w][0]], w), reverse=True),
             3: sorted([w for w in curated if len(w) == 3 and w not in chosen], key=lambda w: (cefr_rank[CURATED_META[w][0]], w), reverse=True),
         }
-        for w in by_len[5]:
+        # For adult tier prioritize 6L and 5L words!
+        for w in by_len[6] + by_len[5]:
             if len(chosen) < target_n:
                 chosen.append(w)
         added_3 = sum(1 for w in chosen if len(w) == 3)
+        max_3 = 2 if lvl["tier"] == "difficile" else 5
         for w in by_len[3]:
-            if len(chosen) >= target_n or added_3 >= 5:
+            if len(chosen) >= target_n or added_3 >= max_3:
                 break
             chosen.append(w)
             added_3 += 1
@@ -246,6 +387,16 @@ def main():
                 break
             if w not in chosen:
                 chosen.append(w)
+        # Fallback to longest valid_words if curated pool ran dry
+        if len(chosen) < target_n:
+            extra_valid = sorted(
+                [w for w in valid_words if w not in chosen and len(w) >= 5],
+                key=lambda w: (-len(w), w),
+            )
+            for w in extra_valid:
+                if len(chosen) >= target_n:
+                    break
+                chosen.append(w)
 
         chosen.sort(key=lambda w: (len(w), w))
         chosen_set = set(chosen)
@@ -253,7 +404,7 @@ def main():
 
         targets = []
         for w in chosen:
-            cefr, emoji, expl = CURATED_META[w]
+            cefr, emoji, expl = CURATED_META.get(w, ("B2", "✨", None))
             entry = {
                 "word": w,
                 "cefr": cefr,
@@ -268,7 +419,7 @@ def main():
         lvl["targets"] = targets
         lvl["bonus_words"] = bonus
         updated_levels.append(lvl)
-        print(f"{lid}: {len(targets)} targets + {len(bonus)} bonus = {len(targets)+len(bonus)} Hunspell words")
+        print(f"{lid} [{lvl['tier']}] ({rows}x{cols}): {len(targets)} targets + {len(bonus)} bonus = {len(targets)+len(bonus)} Hunspell words (cov={len(covered)}/{rows*cols})")
 
     (ROOT / "data").mkdir(parents=True, exist_ok=True)
     (ROOT / "data" / "it_grid_lexicon.json").write_text(
