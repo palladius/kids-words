@@ -23,14 +23,33 @@ const SCENES_IMG = {
   dragon_forest: loadAssetDataUri('ale_seby_dragon_forest.webp'),
   aquarium: loadAssetDataUri('ale_seby_aquarium.webp'),
   zurich_stars: loadAssetDataUri('ale_seby_zurich_stars.webp'),
-  knight_woods: loadAssetDataUri('ale_seby_knight_woods.webp')
+  knight_woods: loadAssetDataUri('ale_seby_knight_woods.webp'),
+};
+
+const SCENES_IMG_PORTRAIT = {
+  bees_meadow: loadAssetDataUri('ale_seby_bees_meadow_portrait.webp'),
+  alpine_sun: loadAssetDataUri('ale_seby_alpine_sun_portrait.webp'),
+  dragon_forest: loadAssetDataUri('ale_seby_dragon_forest_portrait.webp'),
+  aquarium: loadAssetDataUri('ale_seby_aquarium_portrait.webp'),
+  zurich_stars: loadAssetDataUri('ale_seby_zurich_stars_portrait.webp'),
+  knight_woods: loadAssetDataUri('ale_seby_knight_woods_portrait.webp'),
+};
+
+// Vertical framing shift (%) so Ale & Seby's faces sit squarely inside the open portrait showcase band
+const PORTRAIT_SHIFT_Y = {
+  bees_meadow: '-21%',
+  alpine_sun: '-10%',
+  dragon_forest: '-11%',
+  aquarium: '-20%',
+  zurich_stars: '-20%',
+  knight_woods: '-19%',
 };
 
 const html = `<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>🔤 Kids Words v${APP_VERSION} — Parole in Fuga (Ale & Seby)</title>
   <script type="module" src="./src/puffin-login.js"></script>
   <style>
@@ -39,52 +58,61 @@ const html = `<!DOCTYPE html>
       --ale-color: #dc2626;
       --gold: #f59e0b;
       --radius: 16px;
-      --tile: 62px;
-      --gap: 8px;
+      --tile: 96px;
+      --gap: 9px;
+      --tile-font: 40px;
+      --tile-dep-font: 12px;
+      --tile-radius: 18px;
       --font-sans: 'Nunito', 'Fredoka', system-ui, -apple-system, sans-serif;
     }
     * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
-    body {
+    html, body {
       margin: 0;
-      padding: 8px;
+      padding: 0;
       background: #0b1120;
       color: #f8fafc;
       font-family: var(--font-sans);
+      min-height: 100dvh;
     }
     .kw-root {
       font-family: var(--font-sans);
       color: #f8fafc;
-      max-width: 560px;
+      max-width: 540px;
+      height: 100dvh;
+      min-height: 580px;
       margin: 0 auto;
+      padding: 5px 6px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 5px;
     }
+
+    /* TOP BAR (compact, single/two clean lines) */
     .kw-topbar {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 4px 8px;
       background: rgba(15, 23, 42, 0.94);
       color: #f8fafc;
-      padding: 8px 14px;
-      border-radius: var(--radius);
+      padding: 5px 9px;
+      border-radius: 13px;
       border: 1px solid rgba(255, 255, 255, 0.16);
-      min-height: 48px;
+      flex-shrink: 0;
     }
-    .kw-profiles { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+    .kw-profiles { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
     .kw-profile-btn {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 5px 12px;
+      gap: 4px;
+      padding: 3px 9px;
       border-radius: 999px;
       border: 2px solid transparent;
       background: rgba(255, 255, 255, 0.12);
       color: #f8fafc;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 11.5px;
       cursor: pointer;
     }
     .kw-profile-btn.active[data-tier="seby"] {
@@ -95,43 +123,52 @@ const html = `<!DOCTYPE html>
       background: var(--ale-color);
       border-color: #fca5a5;
     }
-    .kw-level-nav { display: flex; align-items: center; gap: 6px; }
+    .kw-level-nav {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: auto;
+    }
     .kw-pill-btn {
       background: rgba(255, 255, 255, 0.15);
       color: #fff;
       border: 1px solid rgba(255, 255, 255, 0.24);
-      border-radius: 10px;
-      padding: 5px 10px;
+      border-radius: 9px;
+      padding: 4px 8px;
       font-weight: 700;
-      font-size: 12px;
+      font-size: 11.5px;
       cursor: pointer;
+      white-space: nowrap;
     }
     .kw-pill-btn:hover { background: rgba(255, 255, 255, 0.25); }
+    .kw-pill-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* =====================================================================
-     * IMMUTABLE STAGE LAYOUT (Mobile-first 5-row vertical stack)
-     * Matrix container NEVER shifts by 1px on swipe or comic explanation!
+     * PORTRAIT STAGE LAYOUT (Mobile-first vertical stack)
+     * - Top HUD: compact Word Bank over the sky/canopy (never crushes!)
+     * - Showcase Window: unobstructed window right over Ale & Seby's faces!
+     * - Giant Keyboard Slot (~46-50% of stage): huge letter tiles!
+     * - Bottom Comic Dock + Footer controls
      * ===================================================================== */
     .kw-stage {
       position: relative;
-      border-radius: 20px;
+      flex: 1;
+      min-height: 0;
+      border-radius: 18px;
       overflow: hidden;
       border: 2px solid rgba(255, 255, 255, 0.24);
       box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5);
-      height: 626px;
-      min-height: 626px;
-      max-height: 626px;
       display: grid;
-      grid-template-rows: 130px 34px 286px 74px 44px;
+      grid-template-rows: max-content minmax(88px, 1fr) minmax(210px, 46%) 48px 36px;
       grid-template-columns: 1fr;
       grid-template-areas:
         "hud"
-        "swipe"
+        "showcase"
         "grid"
         "dock"
         "footer";
-      gap: 6px;
-      padding: 10px;
+      gap: 5px;
+      padding: 7px;
       color: #fff;
       background: #0f172a;
     }
@@ -146,9 +183,10 @@ const html = `<!DOCTYPE html>
     }
     .kw-bg-img {
       width: 100%;
-      height: 100%;
+      height: 136%;
       object-fit: cover;
-      object-position: center center;
+      object-position: center top;
+      transform: translateY(var(--portrait-shift, -19%));
       display: block;
       transition: filter 0.35s ease, transform 0.35s ease;
     }
@@ -157,56 +195,54 @@ const html = `<!DOCTYPE html>
       inset: 0;
       background: linear-gradient(
         180deg,
-        rgba(15, 23, 42, 0.38) 0%,
-        rgba(15, 23, 42, 0.04) 40%,
-        rgba(15, 23, 42, 0.08) 72%,
-        rgba(15, 23, 42, 0.48) 100%
+        rgba(15, 23, 42, 0.26) 0%,
+        rgba(15, 23, 42, 0.0) 16%,
+        rgba(15, 23, 42, 0.0) 44%,
+        rgba(15, 23, 42, 0.14) 85%,
+        rgba(15, 23, 42, 0.45) 100%
       );
       pointer-events: none;
     }
 
-    /* COMPACT GROUPED WORD BANK (3-3-3 | 4-4-4 | 5-5) */
+    /* COMPACT GROUPED WORD BANK */
     .kw-hud-top {
       grid-area: hud;
       position: relative;
       z-index: 2;
-      height: 130px;
-      min-height: 130px;
-      max-height: 130px;
+      max-height: 108px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      background: rgba(15, 23, 42, 0.72);
+      gap: 3px;
+      background: rgba(15, 23, 42, 0.66);
       backdrop-filter: blur(8px);
-      padding: 7px 10px;
-      border-radius: 14px;
+      padding: 5px 8px;
+      border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.2);
-      overflow: hidden;
+      overflow-y: auto;
     }
     .kw-theme-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
+      font-size: 10.5px;
       font-weight: 800;
       flex-shrink: 0;
-      gap: 8px;
+      gap: 6px;
     }
     .kw-targets {
       display: flex;
       flex-wrap: wrap;
       align-items: flex-start;
       align-content: flex-start;
-      gap: 6px 14px;
+      gap: 3px 8px;
       flex: 1;
-      overflow-y: auto;
     }
     .kw-len-group {
       display: inline-flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 3px 4px;
-      padding-right: 6px;
+      gap: 2.5px;
+      padding-right: 5px;
       border-right: 1px solid rgba(255, 255, 255, 0.18);
     }
     .kw-len-group:last-child {
@@ -214,43 +250,42 @@ const html = `<!DOCTYPE html>
       padding-right: 0;
     }
     .kw-len-tag {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 900;
       color: #fde68a;
-      background: rgba(245, 158, 11, 0.2);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      border-radius: 5px;
-      padding: 1px 4px;
-      margin-right: 2px;
-      line-height: 1.2;
+      background: rgba(245, 158, 11, 0.22);
+      border: 1px solid rgba(245, 158, 11, 0.38);
+      border-radius: 4px;
+      padding: 1px 3.5px;
+      line-height: 1.1;
     }
     .kw-word-slot {
       display: inline-flex;
       align-items: center;
-      gap: 1.5px;
+      gap: 1px;
       background: rgba(15, 23, 42, 0.85);
-      padding: 2px 4px;
-      border-radius: 6px;
+      padding: 1.5px 3px;
+      border-radius: 5px;
       border: 1px solid rgba(255, 255, 255, 0.22);
       cursor: pointer;
-      height: 19px;
-      font-size: 10px;
+      height: 15px;
+      font-size: 9px;
     }
     .kw-word-slot.solved {
       background: rgba(22, 163, 74, 0.94);
       border-color: #86efac;
-      padding: 2px 5px;
+      padding: 1.5px 4.5px;
     }
     .kw-slot-box {
-      width: 11px;
-      height: 13px;
-      border-radius: 3px;
-      background: rgba(255, 255, 255, 0.16);
+      width: 8px;
+      height: 9.5px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.2);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 10px;
+      font-size: 9px;
       color: #fff;
       line-height: 1;
     }
@@ -258,17 +293,24 @@ const html = `<!DOCTYPE html>
       background: transparent;
       width: auto;
       padding: 0 0.5px;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px;
     }
 
-    /* SWIPE LIVE WORD BAR (opacity/visibility only — NEVER display:none!) */
-    .kw-swipe-slot {
-      grid-area: swipe;
+    /* SHOWCASE WINDOW FOR ALE & SEBY + LIVE SWIPE PILL */
+    .kw-showcase {
+      grid-area: showcase;
       position: relative;
       z-index: 3;
-      height: 34px;
-      min-height: 34px;
-      max-height: 34px;
+      pointer-events: none;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 2px;
+    }
+    .kw-swipe-slot {
+      position: relative;
+      z-index: 3;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -287,7 +329,7 @@ const html = `<!DOCTYPE html>
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
       border: 2px solid #fffbeb;
       opacity: 0;
       visibility: hidden;
@@ -300,14 +342,14 @@ const html = `<!DOCTYPE html>
       transform: scale(1);
     }
 
-    /* IMMUTABLE MATRIX SLOT */
+    /* GIANT IMMUTABLE MATRIX SLOT (~50% OF STAGE HEIGHT!) */
     .kw-grid-slot {
       grid-area: grid;
       position: relative;
       z-index: 2;
-      height: 286px;
-      min-height: 286px;
-      max-height: 286px;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -318,7 +360,7 @@ const html = `<!DOCTYPE html>
       transition: opacity 0.25s ease;
     }
     .kw-stage.peeking .kw-grid-wrap {
-      opacity: 0.06;
+      opacity: 0.05;
       pointer-events: none;
     }
     .kw-grid {
@@ -337,11 +379,11 @@ const html = `<!DOCTYPE html>
     .kw-tile {
       width: var(--tile);
       height: var(--tile);
-      border-radius: 15px;
-      background: rgba(255, 251, 235, 0.88);
+      border-radius: var(--tile-radius);
+      background: rgba(255, 251, 235, 0.9);
       backdrop-filter: blur(4px);
       border: 3px solid #f59e0b;
-      box-shadow: 0 4px 0 #b45309, 0 8px 14px rgba(0, 0, 0, 0.38);
+      box-shadow: 0 5px 0 #b45309, 0 10px 18px rgba(0, 0, 0, 0.42);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -351,7 +393,7 @@ const html = `<!DOCTYPE html>
       transition: transform 0.12s ease, opacity 0.35s ease, background-color 0.12s ease;
     }
     .kw-tile-letter {
-      font-size: 25px;
+      font-size: var(--tile-font);
       font-weight: 900;
       color: #1e293b;
       line-height: 1;
@@ -359,25 +401,25 @@ const html = `<!DOCTYPE html>
     }
     .kw-tile-dep {
       position: absolute;
-      top: 3px;
-      right: 4px;
-      font-size: 10px;
+      top: 4px;
+      right: 6px;
+      font-size: var(--tile-dep-font);
       font-weight: 800;
       color: #92400e;
-      background: rgba(245, 158, 11, 0.25);
+      background: rgba(245, 158, 11, 0.26);
       border-radius: 999px;
-      padding: 0 4px;
+      padding: 0 5px;
       pointer-events: none;
     }
     .kw-tile.selected {
       background: #fde047;
       border-color: #ca8a04;
-      box-shadow: 0 4px 0 #854d0e, 0 0 16px rgba(250, 204, 21, 0.9);
+      box-shadow: 0 5px 0 #854d0e, 0 0 20px rgba(250, 204, 21, 0.95);
       transform: scale(1.04);
     }
     .kw-tile.hinted {
       border-color: #22c55e;
-      box-shadow: 0 4px 0 #15803d, 0 0 18px rgba(34, 197, 94, 0.95);
+      box-shadow: 0 5px 0 #15803d, 0 0 20px rgba(34, 197, 94, 0.95);
     }
     .kw-tile.depleted {
       opacity: 0;
@@ -390,9 +432,9 @@ const html = `<!DOCTYPE html>
       grid-area: dock;
       position: relative;
       z-index: 3;
-      height: 74px;
-      min-height: 74px;
-      max-height: 74px;
+      height: 48px;
+      min-height: 48px;
+      max-height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -400,16 +442,16 @@ const html = `<!DOCTYPE html>
     .kw-comic-bubble {
       width: 100%;
       max-width: 640px;
-      height: 70px;
+      height: 46px;
       background: rgba(255, 251, 235, 0.96);
       color: #1e293b;
-      border: 3px solid #f59e0b;
-      border-radius: 16px;
-      padding: 6px 14px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+      border: 2.5px solid #f59e0b;
+      border-radius: 13px;
+      padding: 3px 10px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       overflow: hidden;
       opacity: 0;
       visibility: hidden;
@@ -421,14 +463,14 @@ const html = `<!DOCTYPE html>
       visibility: visible;
       transform: translateY(0);
     }
-    .kw-comic-emoji { font-size: 26px; flex-shrink: 0; }
+    .kw-comic-emoji { font-size: 22px; flex-shrink: 0; }
     .kw-comic-text {
-      font-size: 13px;
-      line-height: 1.25;
+      font-size: 11.5px;
+      line-height: 1.2;
       font-weight: 700;
       overflow: hidden;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
     }
     .kw-comic-badge {
@@ -436,9 +478,9 @@ const html = `<!DOCTYPE html>
       background: #fef3c7;
       color: #b45309;
       border: 1px solid #f59e0b;
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 900;
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 999px;
       margin-left: 4px;
     }
@@ -448,26 +490,35 @@ const html = `<!DOCTYPE html>
       grid-area: footer;
       position: relative;
       z-index: 2;
-      height: 44px;
-      min-height: 44px;
-      max-height: 44px;
+      height: 36px;
+      min-height: 36px;
+      max-height: 36px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      background: rgba(15, 23, 42, 0.82);
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.84);
       backdrop-filter: blur(8px);
-      padding: 0 12px;
-      border-radius: 12px;
+      padding: 0 8px;
+      border-radius: 11px;
       border: 1px solid rgba(255, 255, 255, 0.18);
-      font-size: 12px;
+      font-size: 11px;
       overflow: hidden;
     }
     .kw-footer-meta {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 48%;
+      max-width: 46%;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .kw-scene-caption {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .kw-action-btn {
       background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -475,37 +526,61 @@ const html = `<!DOCTYPE html>
       font-weight: 900;
       border: none;
       border-radius: 9px;
-      padding: 5px 10px;
-      font-size: 12px;
+      padding: 4px 9px;
+      font-size: 11.5px;
       cursor: pointer;
       white-space: nowrap;
     }
+    .kw-debug-hidden {
+      position: absolute;
+      width: 0;
+      height: 0;
+      padding: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
 
     /* =====================================================================
-     * DESKTOP WIDESCREEN INTELLIGENT LAYOUT (>= 940px)
-     * Uses extra screen width so the full cartoon artwork breathes cleanly
-     * on the left while the grouped words flow naturally without scrollbars
-     * and the immutable swipe matrix occupies the right column!
+     * DESKTOP WIDESCREEN INTELLIGENT LAYOUT (>= 940px & height >= 561px)
+     * Uses extra width so Ale & Seby landscape art shines on the left while
+     * the GIANT letter keyboard occupies the entire right half!
      * ===================================================================== */
-    @media (min-width: 940px) {
+    @media (min-width: 940px) and (min-height: 561px) {
       .kw-root {
-        max-width: 1160px;
-        padding-top: 6px;
+        max-width: 1180px;
+        height: auto;
+        min-height: 100dvh;
+        padding: 10px 14px;
+        gap: 8px;
       }
       .kw-stage {
-        height: 726px;
-        min-height: 726px;
-        max-height: 726px;
+        flex: none;
+        height: min(76vh, 710px);
+        min-height: 620px;
+        max-height: 710px;
         padding: 16px;
-        gap: 10px 18px;
-        grid-template-columns: 1.24fr 0.76fr;
-        grid-template-rows: 192px 34px 306px 74px 44px;
+        gap: 10px 20px;
+        grid-template-columns: 1.04fr 0.96fr;
+        grid-template-rows: auto 1fr 64px 42px;
         grid-template-areas:
-          "hud   swipe"
           "hud   grid"
-          "art   grid"
-          "dock  dock"
+          "showcase grid"
+          "dock  grid"
           "footer footer";
+      }
+      .kw-bg-img {
+        height: 100%;
+        object-position: center center;
+        transform: none;
+      }
+      .kw-bg-overlay {
+        background: linear-gradient(
+          90deg,
+          rgba(15, 23, 42, 0.25) 0%,
+          rgba(15, 23, 42, 0.04) 50%,
+          rgba(15, 23, 42, 0.24) 100%
+        );
       }
       .kw-hud-top {
         align-self: start;
@@ -521,26 +596,101 @@ const html = `<!DOCTYPE html>
         flex-wrap: wrap;
         align-items: flex-start;
         align-content: flex-start;
-        gap: 4px 10px;
+        gap: 6px 12px;
         overflow: visible;
       }
       .kw-len-group {
-        border-right: 1px solid rgba(255, 255, 255, 0.2);
-        padding-right: 9px;
+        padding-right: 10px;
         gap: 4px 5px;
       }
+      .kw-word-slot {
+        height: 19px;
+        font-size: 10px;
+      }
+      .kw-showcase {
+        align-items: flex-end;
+        justify-content: flex-start;
+        padding-bottom: 4px;
+      }
       .kw-grid-slot {
-        height: 350px;
-        min-height: 350px;
-        max-height: 350px;
-        align-self: center;
+        height: 100%;
+        align-self: stretch;
+      }
+      .kw-bottom-dock {
+        height: 64px;
+        min-height: 64px;
+        max-height: 64px;
       }
       .kw-comic-bubble {
-        max-width: 940px;
+        height: 62px;
+        max-width: none;
+      }
+      .kw-comic-text {
+        font-size: 13px;
+        -webkit-line-clamp: 3;
+      }
+      .kw-footer {
+        height: 42px;
+        min-height: 42px;
+        max-height: 42px;
+        font-size: 12px;
       }
       .kw-footer-meta {
-        max-width: 66%;
+        max-width: 62%;
       }
+      .kw-scene-caption {
+        opacity: 0.85;
+        width: auto;
+      }
+    }
+
+    /* =====================================================================
+     * MOBILE LANDSCAPE GUARD ("Ruota il telefono nell'altra direzione")
+     * Triggers on rotated smartphones (landscape & short viewport <= 560px)
+     * ===================================================================== */
+    .kw-rotate-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: radial-gradient(circle at center, #1e293b 0%, #0b1120 100%);
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      gap: 14px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    @media (orientation: landscape) and (max-height: 560px) {
+      .kw-rotate-overlay {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+    }
+    .kw-rotate-icon {
+      font-size: 54px;
+      animation: kw-tilt-phone 1.8s ease-in-out infinite;
+    }
+    @keyframes kw-tilt-phone {
+      0%, 100% { transform: rotate(90deg); }
+      45%, 65% { transform: rotate(0deg); }
+    }
+    .kw-rotate-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #fde68a;
+    }
+    .kw-rotate-sub {
+      font-size: 14px;
+      color: #cbd5e1;
+      max-width: 380px;
+      line-height: 1.4;
     }
 
     .kw-bonus-pill {
@@ -551,10 +701,11 @@ const html = `<!DOCTYPE html>
       border: 1px solid rgba(245, 158, 11, 0.45);
       color: #fde68a;
       border-radius: 999px;
-      padding: 2px 8px;
+      padding: 2px 7px;
       font-size: 11px;
       font-weight: 800;
       cursor: pointer;
+      flex-shrink: 0;
     }
     .kw-bonus-pill:hover {
       background: rgba(245, 158, 11, 0.32);
@@ -606,11 +757,12 @@ const html = `<!DOCTYPE html>
       letter-spacing: 0.5px;
     }
 
-    /* ALBUM OVERLAY MODAL */
-    .kw-album-modal {
+    /* OVERLAY MODALS (Album, Treasure Trove & End-of-Level Hall of Fame) */
+    .kw-album-modal,
+    .kw-hof-modal {
       position: absolute;
-      inset: 12px;
-      z-index: 10;
+      inset: 10px;
+      z-index: 20;
       background: rgba(15, 23, 42, 0.96);
       backdrop-filter: blur(12px);
       border-radius: 16px;
@@ -624,22 +776,42 @@ const html = `<!DOCTYPE html>
       pointer-events: none;
       transition: opacity 0.2s ease;
     }
-    .kw-album-modal.visible {
+    .kw-album-modal.visible,
+    .kw-hof-modal.visible {
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
+    }
+    .kw-hof-modal[hidden] {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .kw-hof-scroll {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+    }
+    .kw-hof-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+      padding-top: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
     }
     .kw-album-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
       font-weight: 900;
-      font-size: 16px;
+      font-size: 15px;
       color: #fde68a;
     }
     .kw-album-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 10px;
       flex: 1;
       overflow-y: auto;
@@ -660,7 +832,7 @@ const html = `<!DOCTYPE html>
     }
     .kw-album-card img {
       width: 100%;
-      height: 145px;
+      height: 125px;
       object-fit: cover;
       display: block;
     }
@@ -675,33 +847,23 @@ const html = `<!DOCTYPE html>
       opacity: 0.55;
       filter: grayscale(0.5);
     }
-    .kw-pill-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    .kw-debug-hidden {
-      visibility: hidden;
-      pointer-events: none;
-    }
-    .kw-hof-wrap {
-      background: rgba(15, 23, 42, 0.94);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 16px;
-      padding: 14px;
-      margin-top: 4px;
-    }
+
+    /* SLIM APP FOOTER */
     .kw-app-footer {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      padding: 8px 14px;
-      border-radius: 12px;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 9px;
       background: rgba(15, 23, 42, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      font-size: 12px;
+      font-size: 10px;
       color: #94a3b8;
+      flex-shrink: 0;
+      white-space: nowrap;
+      overflow: hidden;
     }
     .kw-app-footer a {
       color: #93c5fd;
@@ -715,6 +877,15 @@ const html = `<!DOCTYPE html>
   </style>
 </head>
 <body>
+  <!-- MOBILE LANDSCAPE ROTATE GUARD -->
+  <div class="kw-rotate-overlay" id="kw-rotate-overlay" aria-live="polite">
+    <div class="kw-rotate-icon">📱</div>
+    <div class="kw-rotate-title">Ruota il telefono nell'altra direzione!</div>
+    <div class="kw-rotate-sub">
+      Metti il telefono in <strong>verticale ↕️</strong> per giocare con i tasti giganti e vedere Ale e Seby ben chiari!
+    </div>
+  </div>
+
   <div class="kw-root">
     <div class="kw-topbar">
       <div class="kw-profiles">
@@ -724,11 +895,10 @@ const html = `<!DOCTYPE html>
       </div>
       <div class="kw-level-nav">
         <button class="kw-pill-btn" id="btn-prev-lvl" title="Livello precedente">◀</button>
-        <span id="lbl-level-idx" style="font-size:12px;font-weight:800;">Livello 1 / 3</span>
+        <span id="lbl-level-idx" style="font-size:11.5px;font-weight:800;">Lv 1/3</span>
         <button class="kw-pill-btn" id="btn-next-lvl" title="Livello successivo">▶</button>
-        <button class="kw-pill-btn" id="btn-album" title="Apri l'Album delle Foto Cartoon di Ale & Seby">🖼️ Album</button>
-        <button class="kw-pill-btn" id="btn-hof-toggle" title="Classifica di Famiglia">🏆</button>
-        <puffin-login id="puffin-widget" app-id="kids-words" lang="it" require-login="false"></puffin-login>
+        <button class="kw-pill-btn" id="btn-album" title="Apri l'Album delle Foto Cartoon di Ale & Seby">🖼️</button>
+        <puffin-login id="puffin-widget" app-id="kids-words" lang="it" require-login="false" compact></puffin-login>
       </div>
     </div>
 
@@ -742,17 +912,19 @@ const html = `<!DOCTYPE html>
       <div class="kw-hud-top" id="kw-hud-top">
         <div class="kw-theme-row">
           <span id="lbl-theme">🐝 Il Prato delle Api</span>
-          <span id="lbl-tiles-left" style="color:#fde68a;">Tessere attive: 9 · Parole: 0/11</span>
+          <span id="lbl-tiles-left" style="color:#fde68a;">Tessere: 9 · 0/11</span>
         </div>
         <div class="kw-targets" id="kw-targets"></div>
       </div>
 
-      <!-- SWIPE LIVE WORD SLOT -->
-      <div class="kw-swipe-slot" id="kw-swipe-slot">
-        <div class="kw-current-word" id="kw-current-word"></div>
+      <!-- CLEAR ART SHOWCASE WINDOW (Ale & Seby always visible!) + Live Swipe Pill -->
+      <div class="kw-showcase" id="kw-showcase">
+        <div class="kw-swipe-slot" id="kw-swipe-slot">
+          <div class="kw-current-word" id="kw-current-word"></div>
+        </div>
       </div>
 
-      <!-- IMMUTABLE MATRIX SLOT -->
+      <!-- GIANT RESPONSIVE MATRIX SLOT (~50% of stage!) -->
       <div class="kw-grid-slot" id="kw-grid-slot">
         <div class="kw-grid-wrap" id="kw-grid-wrap">
           <svg class="kw-svg-laser" id="kw-svg-laser"></svg>
@@ -771,24 +943,24 @@ const html = `<!DOCTYPE html>
       <!-- FOOTER CONTROLS -->
       <div class="kw-footer" id="kw-footer">
         <div class="kw-footer-meta">
-          <span id="lbl-progress-badge" style="color:#93c5fd;font-weight:800;">👤 Anonimo</span> ·
+          <span id="lbl-progress-badge" style="color:#93c5fd;font-weight:800;">👤 Anonimo</span>
           <button class="kw-bonus-pill" id="btn-treasure" title="Apri il Forziere dei Dobloni (parole extra trovate)">
-            🪙 Tesoro: <strong id="lbl-bonus-count">0</strong>
+            🪙 <strong id="lbl-bonus-count">0</strong>
           </button>
-          <span id="lbl-scene-caption" style="margin-left:6px;opacity:0.85;"></span>
+          <span id="lbl-scene-caption" class="kw-scene-caption"></span>
         </div>
         <div style="display:flex;gap:5px;flex-shrink:0;">
-          <button class="kw-pill-btn" id="btn-peek" title="Clicca per ammirare Ale e Seby sullo sfondo">👀 Foto</button>
+          <button class="kw-pill-btn" id="btn-peek" title="Ammira Ale e Seby sullo sfondo">👀 Foto</button>
           <button class="kw-action-btn" id="btn-hint">💡 Aiuto</button>
-          <button class="kw-action-btn kw-debug-hidden" id="btn-solve-one" title="Solo Papà Debug (Riccardo)" style="background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;">✨ Indovina 1</button>
-          <button class="kw-pill-btn" id="btn-reset">🔄 Rigioca</button>
+          <button class="kw-action-btn kw-debug-hidden" id="btn-solve-one" title="Solo Papà Debug (Riccardo)" style="background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;">✨ +1</button>
+          <button class="kw-pill-btn" id="btn-reset">🔄</button>
         </div>
       </div>
 
       <!-- ALBUM OVERLAY MODAL -->
       <div class="kw-album-modal" id="kw-album-modal">
         <div class="kw-album-header">
-          <span>🖼️ Galleria dei Ricordi di Ale & Seby (Clicca una scheda sbloccata per giocarla!)</span>
+          <span>🖼️ Galleria di Ale & Seby (Clicca una scheda sbloccata!)</span>
           <button class="kw-pill-btn" id="btn-album-close">✖ Chiudi</button>
         </div>
         <div class="kw-album-grid" id="kw-album-grid"></div>
@@ -797,35 +969,40 @@ const html = `<!DOCTYPE html>
       <!-- TREASURE TROVE (BISCOTTIERA SEGRETA) MODAL -->
       <div class="kw-album-modal" id="kw-treasure-modal">
         <div class="kw-album-header">
-          <span id="lbl-treasure-title">🍪 Biscottiera Segreta — Parole Bonus Trovate</span>
+          <span id="lbl-treasure-title">🍪 Biscottiera Segreta — Parole Bonus</span>
           <button class="kw-pill-btn" id="btn-treasure-close">✖ Chiudi</button>
         </div>
-        <div style="font-size:13px;color:#cbd5e1;">
-          Tutte le parole italiane reali in questa griglia (verificate su dizionario <em>it_IT</em>) che non erano tra le parole principali finiscono qui nel tuo tesoro segreto!
+        <div style="font-size:12px;color:#cbd5e1;">
+          Tutte le parole italiane reali in questa griglia (verificate su dizionario <em>it_IT</em>) che non erano tra le parole principali finiscono qui!
         </div>
         <div class="kw-treasure-chips" id="kw-treasure-chips"></div>
       </div>
-    </div>
 
-    <!-- HALL OF FAME (Hidden during gameplay; revealed on level completion or 🏆 button) -->
-    <section id="hof-section" class="kw-hof-wrap" hidden>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <h2 style="margin:0;font-size:16px;color:#fde68a;">🏆 Hall of Fame — Kids Words</h2>
-        <button class="kw-pill-btn" id="btn-hof-close">⬅️ Torna al Gioco</button>
-      </div>
-      <puffin-leaderboard id="game-lb" filter-game="kids-words" back-href="./" lang="it"></puffin-leaderboard>
-    </section>
+      <!-- HALL OF FAME (ONLY shown & refreshed when a schema is completed!) -->
+      <section id="hof-section" class="kw-hof-modal" hidden>
+        <div class="kw-album-header">
+          <span id="lbl-hof-title">🏆 Schema Completato · Hall of Fame</span>
+          <button class="kw-pill-btn" id="btn-hof-close">✖ Chiudi</button>
+        </div>
+        <div class="kw-hof-scroll">
+          <puffin-leaderboard id="game-lb" filter-game="kids-words" back-href="./" lang="it"></puffin-leaderboard>
+        </div>
+        <div class="kw-hof-actions">
+          <button class="kw-pill-btn" id="btn-hof-admire">🖼️ Guarda Foto</button>
+          <button class="kw-action-btn" id="btn-hof-next">▶ Prossimo Schema</button>
+        </div>
+      </section>
+    </div>
 
     <!-- CARLESSIAN VERSION & GITHUB FOOTER -->
     <footer class="kw-app-footer" id="kw-app-footer">
-      <div>
-        <strong>🔤 Kids Words</strong> (<em>Parole in Fuga</em>) · <code style="color:#fde68a;">v${APP_VERSION}</code>
-        <span style="margin-left:8px;">© Carlesso Family</span>
+      <div style="overflow:hidden;text-overflow:ellipsis;">
+        <strong>🔤 Kids Words</strong> · <code style="color:#fde68a;">v${APP_VERSION}</code>
       </div>
-      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
-        <a href="https://github.com/palladius/kids-words" target="_blank" rel="noopener noreferrer">🐙 GitHub (palladius/kids-words)</a>
+      <div style="display:flex;gap:8px;flex-wrap:nowrap;align-items:center;flex-shrink:0;">
+        <a href="https://github.com/palladius/kids-words" target="_blank" rel="noopener noreferrer">🐙 GitHub</a>
         <a href="https://palladius.github.io/vetrina/" target="_blank" rel="noopener noreferrer">🎮 Vetrina</a>
-        <a href="./ring.html">🔥💍 Puffin Ring</a>
+        <a href="./ring.html">🔥💍 Ring</a>
       </div>
     </footer>
   </div>
@@ -834,6 +1011,8 @@ const html = `<!DOCTYPE html>
     const APP_VERSION = ${JSON.stringify(APP_VERSION)};
     const LEVELS_IT = ${JSON.stringify(LEVELS_IT)};
     const SCENES_IMG = ${JSON.stringify(SCENES_IMG)};
+    const SCENES_IMG_PORTRAIT = ${JSON.stringify(SCENES_IMG_PORTRAIT)};
+    const PORTRAIT_SHIFT_Y = ${JSON.stringify(PORTRAIT_SHIFT_Y)};
     ${KidsWordsEngine.toString()}
     ${LevelProgression.toString()}
 
@@ -853,8 +1032,13 @@ const html = `<!DOCTYPE html>
     let isDragging = false;
     let hintedCoords = [];
     let levelStartedAt = new Date().toISOString();
-    let currentTilePx = 62;
-    let currentGapPx = 8;
+    let currentTileSize = 96;
+    let currentTileGap = 9;
+    let hofRevealTimer = null;
+
+    function isDesktopWidescreen() {
+      return window.matchMedia('(min-width: 940px) and (min-height: 561px)').matches;
+    }
 
     function getActiveUser() {
       try {
@@ -909,8 +1093,21 @@ const html = `<!DOCTYPE html>
       }
     }
 
+    function hideHallOfFame() {
+      if (hofRevealTimer) {
+        clearTimeout(hofRevealTimer);
+        hofRevealTimer = null;
+      }
+      const hof = document.getElementById('hof-section');
+      if (hof) {
+        hof.hidden = true;
+        hof.classList.remove('visible');
+      }
+    }
+
     function loadLevel() {
       clampToUnlocked();
+      hideHallOfFame();
       const levels = getTierLevels();
       const lvl = levels[currentIdx % levels.length];
       engine = new KidsWordsEngine(lvl);
@@ -934,6 +1131,48 @@ const html = `<!DOCTYPE html>
       bubble.classList.add('visible');
     }
 
+    function computeAndApplyGridGeometry() {
+      if (!engine) return;
+      const lvl = engine.level;
+      const rows = lvl.grid.rows;
+      const cols = lvl.grid.cols;
+      const slotEl = document.getElementById('kw-grid-slot');
+      const wrapEl = document.getElementById('kw-grid-wrap');
+      if (!slotEl || !wrapEl) return;
+
+      const slotW = Math.max(200, slotEl.clientWidth - 8);
+      const slotH = Math.max(200, slotEl.clientHeight - 8);
+      const maxDim = Math.max(rows, cols);
+      const gap = maxDim >= 5 ? 5 : Math.max(6, Math.min(12, Math.round(Math.min(slotW, slotH) * 0.026)));
+      const maxByW = Math.floor((slotW - gap * (cols - 1)) / cols);
+      const maxByH = Math.floor((slotH - gap * (rows - 1)) / rows);
+      const tileSize = Math.max(40, Math.min(142, Math.min(maxByW, maxByH)));
+
+      currentTileSize = tileSize;
+      currentTileGap = gap;
+
+      wrapEl.style.setProperty('--tile', tileSize + 'px');
+      wrapEl.style.setProperty('--gap', gap + 'px');
+      wrapEl.style.setProperty('--tile-font', Math.round(tileSize * 0.44) + 'px');
+      wrapEl.style.setProperty('--tile-dep-font', Math.max(9, Math.round(tileSize * 0.145)) + 'px');
+      wrapEl.style.setProperty('--tile-radius', Math.max(10, Math.round(tileSize * 0.21)) + 'px');
+      drawLaser();
+    }
+
+    function updateBackgroundArt() {
+      if (!engine) return;
+      const lvl = engine.level;
+      const bgImg = document.getElementById('kw-bg-img');
+      if (!bgImg) return;
+      const desktop = isDesktopWidescreen();
+      const map = desktop ? SCENES_IMG : SCENES_IMG_PORTRAIT;
+      const nextSrc = map[lvl.scene_id] || map.bees_meadow;
+      if (bgImg.getAttribute('src') !== nextSrc) {
+        bgImg.setAttribute('src', nextSrc);
+      }
+      bgImg.style.setProperty('--portrait-shift', desktop ? '0%' : (PORTRAIT_SHIFT_Y[lvl.scene_id] || '-6%'));
+    }
+
     function renderAll() {
       const levels = getTierLevels();
       const lvl = engine.level;
@@ -945,33 +1184,13 @@ const html = `<!DOCTYPE html>
       const isPersistent = progression.isPersistentUser(uid);
       const maxUnlocked = progression.getUnlockedMaxIdx(uid, currentTier);
 
-      // Adaptive tile sizing so 3x3..6x6 grids fit crisply inside the immutable grid slot!
-      const maxDim = Math.max(lvl.grid.rows, lvl.grid.cols);
-      if (maxDim >= 6) {
-        currentTilePx = 46;
-        currentGapPx = 6;
-      } else if (maxDim === 5 && lvl.grid.rows === 5) {
-        currentTilePx = 54;
-        currentGapPx = 6;
-      } else if (maxDim === 5) {
-        currentTilePx = 58;
-        currentGapPx = 7;
-      } else {
-        currentTilePx = 62;
-        currentGapPx = 8;
-      }
-      const gridWrap = document.getElementById('kw-grid-wrap');
-      gridWrap.style.setProperty('--tile', currentTilePx + 'px');
-      gridWrap.style.setProperty('--gap', currentGapPx + 'px');
-
-      // Update level counter & lock indicator
       const lockStatus = isAdmin
         ? '👑'
         : (!isPersistent
-            ? '🔒 Login per Liv. 2+'
-            : (maxUnlocked >= levels.length - 1 ? '🔓' : '🔒 ' + (maxUnlocked + 1) + '/' + levels.length));
+            ? '🔒 Login Lv2+'
+            : (maxUnlocked >= levels.length - 1 ? '🔓' : '🔒' + (maxUnlocked + 1) + '/' + levels.length));
       document.getElementById('lbl-level-idx').textContent =
-        'Livello ' + (currentIdx + 1) + ' / ' + levels.length + ' (' + lockStatus + ')';
+        'Lv ' + (currentIdx + 1) + '/' + levels.length + ' (' + lockStatus + ')';
 
       const prevBtn = document.getElementById('btn-prev-lvl');
       const nextBtn = document.getElementById('btn-next-lvl');
@@ -982,38 +1201,31 @@ const html = `<!DOCTYPE html>
         ? 'Fai Login in alto a destra per sbloccare il Livello 2+!'
         : (nextBtn.disabled ? 'Completa questo livello per sbloccare il prossimo!' : 'Livello successivo');
 
-      // Papà Debug button ONLY visible to riccardo!
       const solveOneBtn = document.getElementById('btn-solve-one');
       solveOneBtn.classList.toggle('kw-debug-hidden', !isAdmin);
 
-      // Progress badge in footer
       const progEl = document.getElementById('lbl-progress-badge');
       if (isAdmin) {
-        progEl.textContent = '👑 Papà Debug (tutti sbloccati)';
+        progEl.textContent = '👑 Papà';
       } else if (isPersistent && user) {
-        progEl.textContent = '🐧 ' + user.shortName + ' · Sbloccati: ' + (maxUnlocked + 1) + '/' + levels.length;
+        progEl.textContent = '🐧 ' + user.shortName + ' (' + (maxUnlocked + 1) + '/' + levels.length + ')';
       } else {
-        progEl.textContent = '👤 Anonimo · 🔒 Liv. 2+ richiede Login';
+        progEl.textContent = '👤 Anon · 🔒 Lv2+';
       }
 
       document.getElementById('lbl-theme').textContent = lvl.theme;
       document.getElementById('lbl-scene-caption').textContent = '🎨 ' + lvl.scene_caption;
       document.getElementById('lbl-tiles-left').textContent =
-        'Tessere attive: ' + engine.getActiveTileCount() + ' · Parole: ' + solvedCount + '/' + totalCount;
+        'Tessere: ' + engine.getActiveTileCount() + ' · ' + solvedCount + '/' + totalCount;
       document.getElementById('lbl-bonus-count').textContent = engine.bonusWordsFound.size;
       const treasureBtn = document.getElementById('btn-treasure');
       if (treasureBtn) {
         treasureBtn.title = 'Forziere dei Dobloni: ' + engine.bonusWordsFound.size + ' parole extra trovate (su ' + (lvl.bonus_words || []).length + ' nel dizionario)';
       }
 
-      // Nano Banana Cartoon Character-Consistency Backdrop
-      const bgImg = document.getElementById('kw-bg-img');
-      const nextSrc = SCENES_IMG[lvl.scene_id] || SCENES_IMG.bees_meadow;
-      if (bgImg.getAttribute('src') !== nextSrc) {
-        bgImg.setAttribute('src', nextSrc);
-      }
+      updateBackgroundArt();
 
-      // Target slots GROUPED BY LENGTH ascending (3 3 3 | 4 4 4 | 5 5)
+      // Target slots GROUPED BY LENGTH ascending (3L | 4L | 5L)
       const targetsEl = document.getElementById('kw-targets');
       targetsEl.innerHTML = '';
       const sortedTargets = [...lvl.targets].sort((a, b) => a.word.length - b.word.length || a.word.localeCompare(b.word));
@@ -1051,7 +1263,7 @@ const html = `<!DOCTYPE html>
           if (solved && t.needs_explanation) {
             const infoDot = document.createElement('span');
             infoDot.textContent = ' ' + (t.emoji || '💡');
-            infoDot.style.fontSize = '10px';
+            infoDot.style.fontSize = '9.5px';
             slot.appendChild(infoDot);
           }
 
@@ -1071,7 +1283,7 @@ const html = `<!DOCTYPE html>
         targetsEl.appendChild(groupEl);
       }
 
-      // Immutable Grid (62px tile + 8px gap = 70px pitch)
+      // Giant Responsive Grid
       const gridEl = document.getElementById('kw-grid');
       gridEl.style.gridTemplateColumns = 'repeat(' + lvl.grid.cols + ', var(--tile))';
       gridEl.innerHTML = '';
@@ -1107,7 +1319,7 @@ const html = `<!DOCTYPE html>
           gridEl.appendChild(tile);
         }
       }
-      drawLaser();
+      computeAndApplyGridGeometry();
     }
 
     function stepToTile(r, c) {
@@ -1146,18 +1358,20 @@ const html = `<!DOCTYPE html>
 
     function drawLaser() {
       const svg = document.getElementById('kw-svg-laser');
+      if (!svg) return;
       if (dragPath.length < 2) {
         svg.innerHTML = '';
         return;
       }
-      const pitch = currentTilePx + currentGapPx;
-      const half = currentTilePx / 2;
+      const pitch = currentTileSize + currentTileGap;
+      const half = currentTileSize / 2;
+      const strokeW = Math.max(6, Math.round(currentTileSize * 0.11));
       const pts = dragPath.map(([r, c]) => {
         const x = c * pitch + half;
         const y = r * pitch + half;
         return x + ',' + y;
       }).join(' ');
-      svg.innerHTML = '<polyline points="' + pts + '" fill="none" stroke="#f59e0b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.88"/>';
+      svg.innerHTML = '<polyline points="' + pts + '" fill="none" stroke="#f59e0b" stroke-width="' + strokeW + '" stroke-linecap="round" stroke-linejoin="round" opacity="0.88"/>';
     }
 
     function finishSwipe() {
@@ -1172,7 +1386,32 @@ const html = `<!DOCTYPE html>
       }
     }
 
-    function handleResult(res) {
+    async function refreshAndShowHallOfFame(kidName, hasNext) {
+      const hof = document.getElementById('hof-section');
+      const titleEl = document.getElementById('lbl-hof-title');
+      const nextBtn = document.getElementById('btn-hof-next');
+      const lb = document.getElementById('game-lb');
+
+      if (titleEl) {
+        titleEl.textContent = '🎉 Bravo ' + kidName + '! · 🏆 Hall of Fame Aggiornata';
+      }
+      if (nextBtn) {
+        nextBtn.textContent = hasNext ? '▶ Prossimo Schema' : '🔄 Rigioca Tier';
+      }
+      if (lb) {
+        if (typeof lb.render === 'function') lb.render();
+        if (typeof lb.syncFromCloud === 'function') {
+          try { await lb.syncFromCloud(); } catch {}
+        }
+        if (typeof lb.render === 'function') lb.render();
+      }
+      if (hof) {
+        hof.hidden = false;
+        hof.classList.add('visible');
+      }
+    }
+
+    async function handleResult(res) {
       hintedCoords = [];
       if (res.status === 'target_solved') {
         const t = res.target;
@@ -1191,13 +1430,18 @@ const html = `<!DOCTYPE html>
           const levels = getTierLevels();
           const hasNext = currentIdx + 1 < levels.length;
 
-          // Persist score + unlocked level index to Cloud Firestore via PuffinLogin
+          // Render immediately so final tiles vanish & level unlock updates without waiting for network
+          renderAll();
+          updateDragVisuals();
+
+          // Persist score & update Hall of Fame
+          let scoreSubmitted = false;
           try {
             if (window.PuffinLogin && isPersistent) {
               const endedAt = new Date().toISOString();
               const durationSec = Math.max(5, Math.round((Date.parse(endedAt) - Date.parse(levelStartedAt)) / 1000));
               const score = engine.level.targets.length * 100 + engine.bonusWordsFound.size * 25 + (currentIdx + 1) * 50;
-              window.PuffinLogin.submitScore({
+              await window.PuffinLogin.submitScore({
                 appId: 'kids-words',
                 player_id: uid,
                 score,
@@ -1212,27 +1456,30 @@ const html = `<!DOCTYPE html>
                   unlocked_max_idx: newMaxUnlocked,
                   bonus_words: engine.bonusWordsFound.size,
                 },
-              }).catch(() => {});
+              });
+              scoreSubmitted = true;
             }
           } catch {}
 
-          // Reveal Hall of Fame at end of match
-          const hof = document.getElementById('hof-section');
-          if (hof) hof.hidden = false;
-
+          // Let the kid enjoy the revealed illustration & TTS, then show updated Hall of Fame
+          const unlockMsg = hasNext
+            ? 'Livello ' + (currentIdx + 2) + ' sbloccato!'
+            : 'Hai completato tutti i livelli di questa modalità!';
           setTimeout(() => {
             if (!isPersistent) {
               const gateMsg = '🔒 Livello 2 bloccato per gli anonimi! Fai Login in alto a destra (🔐 Login) per sbloccare il Livello 2!';
               showComicBubble('🔐', 'Quadro Svelato! Ora fai Login!', gateMsg, 'Login Richiesto');
               speakItalian('Bravissimo! Ma per andare al livello 2 devi fare login!');
             } else {
-              const unlockMsg = hasNext
-                ? 'Livello ' + (currentIdx + 2) + ' sbloccato! Premi ▶ in alto per continuare!'
-                : 'Hai completato tutti i livelli di questa modalità!';
-              showComicBubble('🎉', 'Quadro Svelato, bravo ' + kidName + '!', unlockMsg, 'Livello Completato');
+              showComicBubble('🎉', 'Quadro Svelato, bravo ' + kidName + '!', unlockMsg, 'Schema Completato');
               speakItalian('Evviva ' + kidName + '! ' + unlockMsg);
             }
-          }, 900);
+          }, 700);
+
+          if (hofRevealTimer) clearTimeout(hofRevealTimer);
+          hofRevealTimer = setTimeout(() => {
+            refreshAndShowHallOfFame(kidName, hasNext && (isPersistent || progression.isAdmin(uid)));
+          }, 1700);
         }
       } else if (res.status === 'bonus_word') {
         playBiribip();
@@ -1430,6 +1677,7 @@ const html = `<!DOCTYPE html>
     document.getElementById('btn-album').addEventListener('click', () => {
       renderAlbum();
       document.getElementById('kw-treasure-modal').classList.remove('visible');
+      hideHallOfFame();
       document.getElementById('kw-album-modal').classList.toggle('visible');
     });
 
@@ -1440,6 +1688,7 @@ const html = `<!DOCTYPE html>
     document.getElementById('btn-treasure').addEventListener('click', () => {
       renderTreasure();
       document.getElementById('kw-album-modal').classList.remove('visible');
+      hideHallOfFame();
       document.getElementById('kw-treasure-modal').classList.toggle('visible');
     });
 
@@ -1447,13 +1696,23 @@ const html = `<!DOCTYPE html>
       document.getElementById('kw-treasure-modal').classList.remove('visible');
     });
 
-    document.getElementById('btn-hof-toggle').addEventListener('click', () => {
-      const hof = document.getElementById('hof-section');
-      hof.hidden = !hof.hidden;
+    document.getElementById('btn-hof-close').addEventListener('click', hideHallOfFame);
+    document.getElementById('btn-hof-admire').addEventListener('click', () => {
+      hideHallOfFame();
+      document.getElementById('kw-stage').classList.add('peeking');
     });
-
-    document.getElementById('btn-hof-close').addEventListener('click', () => {
-      document.getElementById('hof-section').hidden = true;
+    document.getElementById('btn-hof-next').addEventListener('click', () => {
+      const levels = getTierLevels();
+      const uid = getActiveUserId();
+      const maxUnlocked = progression.getUnlockedMaxIdx(uid, currentTier);
+      if (currentIdx + 1 <= maxUnlocked && currentIdx + 1 < levels.length) {
+        currentIdx += 1;
+      } else if (progression.isAdmin(uid)) {
+        currentIdx = (currentIdx + 1) % levels.length;
+      } else {
+        currentIdx = 0;
+      }
+      loadLevel();
     });
 
     document.getElementById('btn-peek').addEventListener('click', () => {
@@ -1512,6 +1771,23 @@ const html = `<!DOCTYPE html>
         loadLevel();
       }
     });
+
+    window.addEventListener('resize', () => {
+      updateBackgroundArt();
+      computeAndApplyGridGeometry();
+    });
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => {
+        updateBackgroundArt();
+        computeAndApplyGridGeometry();
+      }, 120);
+    });
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(() => {
+        computeAndApplyGridGeometry();
+      });
+      ro.observe(document.getElementById('kw-grid-slot'));
+    }
 
     // Initial boot (supports ?tier=facile|medio|difficile permalink) + wait briefly for puffin-login upgrade
     try {

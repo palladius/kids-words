@@ -97,20 +97,29 @@ test('Phase 3: Solving all words except the last one leaves exact K letters for 
   }
 });
 
-test('Phase 4: Immutable grid layout, widescreen desktop media query, length-grouped word bank & Nano Banana scenes', async () => {
+test('Phase 4: Giant 50% responsive keyboard, portrait/desktop layouts, rotate guard, end-of-level Hall of Fame & Nano Banana scenes', async () => {
   const fs = await import('node:fs');
   const html = fs.readFileSync(new URL('../public/index.html', import.meta.url), 'utf8');
 
-  assert.match(html, /grid-template-rows:\s*130px\s+34px\s+286px\s+74px\s+44px/);
+  assert.match(html, /minmax\(210px,\s*46%\)/, 'Portrait stage must dedicate ~46-50% height to the giant letter keyboard');
+  assert.match(html, /computeAndApplyGridGeometry/, 'Tile sizes & SVG laser must scale dynamically with grid slot');
+  assert.match(html, /SCENES_IMG_PORTRAIT/, 'Must bundle portrait 9:16 Ale & Seby artwork for vertical phone view');
   assert.match(html, /@media\s*\(min-width:\s*940px\)/, 'Must have intelligent widescreen desktop layout');
+  assert.match(html, /@media\s*\(orientation:\s*landscape\)\s*and\s*\(max-height:\s*560px\)/, 'Must prompt to rotate phone in mobile landscape');
+  assert.match(html, /Ruota il telefono/, 'Rotate overlay must instruct user in Italian');
   assert.match(html, /kw-len-group/, 'Target words must be grouped by length (3L | 4L | 5L)');
+
+  // Hall of Fame must NOT have a topbar toggle during gameplay; it only opens after completing a schema
+  assert.ok(!html.includes('id="btn-hof-toggle"'), 'Hall of Fame toggle button must be removed from gameplay topbar');
+  assert.match(html, /<section id="hof-section"[^>]*hidden/, 'Hall of Fame must be hidden during gameplay');
+  assert.match(html, /refreshAndShowHallOfFame/, 'Hall of Fame must refresh & open upon completing a schema');
 
   const gridPos = html.indexOf('id="kw-grid-slot"');
   const dockPos = html.indexOf('id="kw-bottom-dock"');
-  assert.ok(gridPos > 0 && dockPos > gridPos, 'Comic bubble dock must be placed below the immutable letter matrix');
+  assert.ok(gridPos > 0 && dockPos > gridPos, 'Comic bubble dock must be placed below the letter matrix');
 
   const cssBlock = html.slice(html.indexOf('<style>'), html.indexOf('</style>'));
-  assert.ok(!cssBlock.includes('display: none'), 'CSS must not use display: none on swipe or comic elements');
+  assert.ok(!cssBlock.includes('display: none'), 'CSS must not use display: none on swipe, rotate, or modal elements');
 
   const expectedScenes = ['bees_meadow', 'alpine_sun', 'dragon_forest', 'aquarium', 'zurich_stars', 'knight_woods'];
   for (const level of LEVELS_IT) {
