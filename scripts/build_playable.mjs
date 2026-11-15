@@ -697,7 +697,7 @@ const html = `<!DOCTYPE html>
         <button class="kw-pill-btn" id="btn-next-lvl" title="Livello successivo">▶</button>
         <button class="kw-pill-btn" id="btn-album" title="Apri l'Album delle Foto Cartoon di Ale & Seby">🖼️ Album</button>
         <button class="kw-pill-btn" id="btn-hof-toggle" title="Classifica di Famiglia">🏆</button>
-        <puffin-login id="puffin-widget" app-id="kids-words" skin="it"></puffin-login>
+        <puffin-login id="puffin-widget" app-id="kids-words" lang="it" require-login="false"></puffin-login>
       </div>
     </div>
 
@@ -782,7 +782,7 @@ const html = `<!DOCTYPE html>
         <h2 style="margin:0;font-size:16px;color:#fde68a;">🏆 Hall of Fame — Kids Words</h2>
         <button class="kw-pill-btn" id="btn-hof-close">⬅️ Torna al Gioco</button>
       </div>
-      <puffin-leaderboard id="game-lb" filter-game="kids-words" back-href="./"></puffin-leaderboard>
+      <puffin-leaderboard id="game-lb" filter-game="kids-words" back-href="./" lang="it"></puffin-leaderboard>
     </section>
 
     <!-- CARLESSIAN VERSION & GITHUB FOOTER -->
@@ -1127,6 +1127,7 @@ const html = `<!DOCTYPE html>
                 startedAt: levelStartedAt,
                 endedAt,
                 durationSec,
+                skipCardDrop: true,
                 extra: {
                   tier: currentTier,
                   level_id: engine.level.id,

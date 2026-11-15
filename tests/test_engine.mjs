@@ -204,6 +204,7 @@ test('Phase 7: PuffinLogin stateful level progression (Anon RAM-only vs Ale/Seby
   assert.match(html, new RegExp(`v${pkg.version.replace(/\./g, '\\.')}`));
   assert.match(html, /https:\/\/github\.com\/palladius\/kids-words/);
   assert.ok(fs.existsSync(new URL('../public/src/puffin-login.js', import.meta.url)), 'puffin-login.js must exist in public/src/');
+  assert.ok(fs.existsSync(new URL('../public/src/puffin-cards.js', import.meta.url)), 'puffin-cards.js must exist in public/src/');
 
   // Mock localStorage
   const store = new Map();
