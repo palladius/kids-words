@@ -559,6 +559,33 @@ const html = `<!DOCTYPE html>
     .kw-bonus-pill:hover {
       background: rgba(245, 158, 11, 0.32);
     }
+    .kw-bonus-pill.pulse-gold {
+      animation: kwGoldPulse 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      background: rgba(251, 191, 36, 0.45);
+      border-color: #fde68a;
+    }
+    @keyframes kwGoldPulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 rgba(251, 191, 36, 0); }
+      45% { transform: scale(1.22); box-shadow: 0 0 18px rgba(251, 191, 36, 0.85); }
+      100% { transform: scale(1); box-shadow: 0 0 0 rgba(251, 191, 36, 0); }
+    }
+    .kw-flying-doubloon {
+      position: fixed;
+      z-index: 9999;
+      pointer-events: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: linear-gradient(135deg, #fde047, #f59e0b);
+      color: #451a03;
+      border: 2px solid #fffbeb;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.65);
+      transition: transform 0.48s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.48s ease;
+    }
     .kw-treasure-chips {
       display: flex;
       flex-wrap: wrap;
@@ -745,8 +772,8 @@ const html = `<!DOCTYPE html>
       <div class="kw-footer" id="kw-footer">
         <div class="kw-footer-meta">
           <span id="lbl-progress-badge" style="color:#93c5fd;font-weight:800;">👤 Anonimo</span> ·
-          <button class="kw-bonus-pill" id="btn-treasure" title="Apri la Biscottiera Segreta delle parole extra trovate!">
-            🍪 Segrete: <strong id="lbl-bonus-count">0</strong> / <span id="lbl-bonus-total">0</span>
+          <button class="kw-bonus-pill" id="btn-treasure" title="Apri il Forziere dei Dobloni (parole extra trovate)">
+            🪙 Tesoro: <strong id="lbl-bonus-count">0</strong>
           </button>
           <span id="lbl-scene-caption" style="margin-left:6px;opacity:0.85;"></span>
         </div>
@@ -974,7 +1001,10 @@ const html = `<!DOCTYPE html>
       document.getElementById('lbl-tiles-left').textContent =
         'Tessere attive: ' + engine.getActiveTileCount() + ' · Parole: ' + solvedCount + '/' + totalCount;
       document.getElementById('lbl-bonus-count').textContent = engine.bonusWordsFound.size;
-      document.getElementById('lbl-bonus-total').textContent = (lvl.bonus_words || []).length;
+      const treasureBtn = document.getElementById('btn-treasure');
+      if (treasureBtn) {
+        treasureBtn.title = 'Forziere dei Dobloni: ' + engine.bonusWordsFound.size + ' parole extra trovate (su ' + (lvl.bonus_words || []).length + ' nel dizionario)';
+      }
 
       // Nano Banana Cartoon Character-Consistency Backdrop
       const bgImg = document.getElementById('kw-bg-img');
@@ -1205,12 +1235,18 @@ const html = `<!DOCTYPE html>
           }, 900);
         }
       } else if (res.status === 'bonus_word') {
-        showComicBubble('🍪', res.word + ' — Parola Segreta!', 'Bravissimo! Aggiunta al Tesoro Segreto (' + engine.bonusWordsFound.size + '/' + (engine.level.bonus_words || []).length + ')!', 'Biscottiera +1');
-        speakItalian('Parola segreta: ' + res.word);
+        playBiribip();
+        animateDoubloonToTreasure(res.word);
       } else if (res.status === 'already_solved') {
         showComicBubble('✅', res.word, 'Questa parola l’avevi già scoperta nello schema!', 'Già trovata');
       } else if (res.status === 'already_bonus') {
-        showComicBubble('🍪', res.word, 'Questa parola segreta è già nella tua biscottiera!', 'Già nel tesoro');
+        playBiribip();
+        const tBtn = document.getElementById('btn-treasure');
+        if (tBtn) {
+          tBtn.classList.remove('pulse-gold');
+          void tBtn.offsetWidth;
+          tBtn.classList.add('pulse-gold');
+        }
       } else if (res.status === 'not_found' && res.word && res.word.length >= 3) {
         showComicBubble('🤔', res.word, 'Non risulta nel dizionario italiano di questa griglia. Prova un’altra strada!', 'Riprova');
       }
@@ -1218,17 +1254,74 @@ const html = `<!DOCTYPE html>
       updateDragVisuals();
     }
 
+    function playBiribip() {
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        const ctx = window.__kwAudio || (window.__kwAudio = new AC());
+        if (ctx.state === 'suspended') ctx.resume();
+        const now = ctx.currentTime;
+        [[987.77, 0.0, 0.06], [1318.51, 0.06, 0.09], [1567.98, 0.13, 0.11]].forEach(([freq, offset, dur]) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + offset);
+          gain.gain.setValueAtTime(0.001, now + offset);
+          gain.gain.exponentialRampToValueAtTime(0.13, now + offset + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + offset + dur);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + offset);
+          osc.stop(now + offset + dur + 0.01);
+        });
+      } catch {}
+    }
+
+    function animateDoubloonToTreasure(word) {
+      try {
+        const srcEl = document.getElementById('kw-grid-wrap') || document.getElementById('kw-current-word');
+        const dstEl = document.getElementById('btn-treasure');
+        if (!srcEl || !dstEl) return;
+        const s = srcEl.getBoundingClientRect();
+        const d = dstEl.getBoundingClientRect();
+        const startX = s.left + s.width / 2 - 44;
+        const startY = s.top + 10;
+        const dx = d.left + d.width / 2 - (startX + 44);
+        const dy = d.top + d.height / 2 - (startY + 14);
+
+        const pill = document.createElement('div');
+        pill.className = 'kw-flying-doubloon';
+        pill.textContent = '🪙 ' + word + ' +1';
+        pill.style.left = startX + 'px';
+        pill.style.top = startY + 'px';
+        document.body.appendChild(pill);
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            pill.style.transform = 'translate(' + dx + 'px, ' + dy + 'px) scale(0.65)';
+            pill.style.opacity = '0.18';
+          });
+        });
+        setTimeout(() => {
+          pill.remove();
+          dstEl.classList.remove('pulse-gold');
+          void dstEl.offsetWidth;
+          dstEl.classList.add('pulse-gold');
+        }, 480);
+      } catch {}
+    }
+
     function renderTreasure() {
       const chipsEl = document.getElementById('kw-treasure-chips');
       const total = (engine.level.bonus_words || []).length;
       const found = Array.from(engine.bonusWordsFound).sort((a, b) => a.length - b.length || a.localeCompare(b));
       document.getElementById('lbl-treasure-title').textContent =
-        '🍪 Biscottiera Segreta — ' + found.length + ' / ' + total + ' parole scoperte';
+        '🪙 Forziere dei Dobloni — ' + found.length + ' / ' + total + ' parole extra scoperte';
       if (!found.length) {
-        chipsEl.innerHTML = '<div style="color:#94a3b8;font-size:13px;">Ancora nessuna parola segreta trovata in questo livello. Prova a strisciare parole italiane extra (es. SOL, SOMA, ARARE...)!</div>';
+        chipsEl.innerHTML = '<div style="color:#94a3b8;font-size:13px;">Ancora nessun doblone nel forziere! Ogni parola italiana extra valida vola qui con un "biribip!" e vale +1 doblone d’oro!</div>';
         return;
       }
-      chipsEl.innerHTML = found.map(w => '<span class="kw-treasure-chip">🍪 ' + w + '</span>').join('');
+      chipsEl.innerHTML = found.map(w => '<span class="kw-treasure-chip">🪙 ' + w + '</span>').join('');
     }
 
     function tierDisplayName(tier) {

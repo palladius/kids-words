@@ -4,9 +4,11 @@ import { KidsWordsEngine } from '../src/engine.mjs';
 import { LEVELS_IT } from '../src/levels_it.mjs';
 import { LevelProgression } from '../src/progression.mjs';
 
-test('Phase 1: All 10 Italian levels (Facile 3x3/3x4, Medio 3x4/3x5/4x4, Difficile 5x5/5x6/6x6), sorted by length, ORTHOGONAL ONLY, and D(r,c) >= 1 invariant', () => {
+test('Phase 1: All 10 Italian levels (<=16 tiles max: Facile 3x3/3x4, Medio 3x4/3x5/4x4, Difficile 3x5/4x4), sorted by length, ORTHOGONAL ONLY, and D(r,c) >= 1 invariant', () => {
   assert.ok(LEVELS_IT.length >= 10, 'Should have 10 curated Italian levels (Facile + Medio + Difficile Adult)');
   for (const level of LEVELS_IT) {
+    const area = level.grid.rows * level.grid.cols;
+    assert.ok(area <= 16, `Grid ${level.id} (${level.grid.rows}x${level.grid.cols}=${area}) exceeds max 16 letters!`);
     const engine = new KidsWordsEngine(level);
     if (level.tier === 'facile') {
       assert.ok(
@@ -21,8 +23,8 @@ test('Phase 1: All 10 Italian levels (Facile 3x3/3x4, Medio 3x4/3x5/4x4, Diffici
     } else {
       assert.equal(level.tier, 'difficile');
       assert.ok(
-        level.targets.length >= 25 && level.targets.length <= 36,
-        `Difficile Adult level ${level.id} must have 25-36 words, found ${level.targets.length}`
+        level.targets.length >= 28 && level.targets.length <= 34,
+        `Difficile Adult level ${level.id} must have 28-34 cohesive targets, found ${level.targets.length}`
       );
     }
 
