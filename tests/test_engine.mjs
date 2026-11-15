@@ -127,3 +127,67 @@ test('Phase 5: Adversarial solve-order fuzzing (random permutations never trap t
     }
   }
 });
+
+test('Phase 6: Exhaustive Italian dictionary completeness (every Hunspell it_IT word on every grid — incl. SOL, SOLO, SOMA, ARARE — is accepted)', async () => {
+  const fs = await import('node:fs');
+  const lexicon = JSON.parse(
+    fs.readFileSync(new URL('../data/it_grid_lexicon.json', import.meta.url), 'utf8')
+  );
+
+  function findAllGridWordPaths(grid) {
+    const rows = grid.length;
+    const cols = grid[0].length;
+    const map = new Map();
+    function dfs(r, c, path, word) {
+      if (word.length >= 3 && word.length <= 7 && !map.has(word)) {
+        map.set(word, [...path]);
+      }
+      if (word.length >= 7) return;
+      for (const [dr, dc] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
+        const nr = r + dr;
+        const nc = c + dc;
+        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && !path.some(([pr, pc]) => pr === nr && pc === nc)) {
+          path.push([nr, nc]);
+          dfs(nr, nc, path, word + grid[nr][nc]);
+          path.pop();
+        }
+      }
+    }
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        dfs(r, c, [[r, c]], grid[r][c]);
+      }
+    }
+    return map;
+  }
+
+  for (const level of LEVELS_IT) {
+    const validWords = lexicon[level.id];
+    assert.ok(Array.isArray(validWords) && validWords.length > 0, `Missing lexicon entries for ${level.id}`);
+    const gridPaths = findAllGridWordPaths(level.grid.initial_letters);
+
+    // Fresh engine per check so tile depletion never blocks testing bonus/target recognition
+    for (const word of validWords) {
+      const path = gridPaths.get(word);
+      assert.ok(path, `Word ${word} in lexicon must be reachable orthogonally on ${level.id}`);
+      const engine = new KidsWordsEngine(level);
+      const res = engine.submitPath(path);
+      assert.ok(
+        res.status === 'target_solved' || res.status === 'bonus_word',
+        `Valid Italian word "${word}" on ${level.id} was NOT accepted (got status=${res.status})!`
+      );
+    }
+  }
+
+  // Explicit regression check for Riccardo & Ale's discovered words in it_ale_001
+  const ale1 = LEVELS_IT.find(l => l.id === 'it_ale_001');
+  const ale1Paths = findAllGridWordPaths(ale1.grid.initial_letters);
+  for (const mustAccept of ['SOL', 'SOLO', 'SOMA', 'ARARE', 'ASOLE', 'MARE', 'RAMO', 'ROSA']) {
+    const engine = new KidsWordsEngine(ale1);
+    const res = engine.submitPath(ale1Paths.get(mustAccept));
+    assert.ok(
+      res.status === 'target_solved' || res.status === 'bonus_word',
+      `Regression fail on it_ale_001: "${mustAccept}" must be accepted!`
+    );
+  }
+});

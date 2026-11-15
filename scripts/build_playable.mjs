@@ -479,22 +479,22 @@ const html = `<!DOCTYPE html>
     /* =====================================================================
      * DESKTOP WIDESCREEN INTELLIGENT LAYOUT (>= 940px)
      * Uses extra screen width so the full cartoon artwork breathes cleanly
-     * on the left while the grouped words sit in crisp multi-column stacks
+     * on the left while the grouped words flow naturally without scrollbars
      * and the immutable swipe matrix occupies the right column!
      * ===================================================================== */
     @media (min-width: 940px) {
       .kw-root {
-        max-width: 1140px;
+        max-width: 1160px;
         padding-top: 6px;
       }
       .kw-stage {
-        height: 660px;
-        min-height: 660px;
-        max-height: 660px;
+        height: 676px;
+        min-height: 676px;
+        max-height: 676px;
         padding: 16px;
         gap: 10px 18px;
-        grid-template-columns: 1.08fr 0.92fr;
-        grid-template-rows: 132px 34px 330px 74px 44px;
+        grid-template-columns: 1.22fr 0.78fr;
+        grid-template-rows: 166px 34px 306px 74px 44px;
         grid-template-areas:
           "hud   swipe"
           "hud   grid"
@@ -506,31 +506,69 @@ const html = `<!DOCTYPE html>
         height: auto;
         min-height: 0;
         max-height: none;
-        padding: 10px 12px;
+        padding: 10px 14px;
       }
       .kw-targets {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 8px 10px;
-        align-items: start;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        align-content: flex-start;
+        gap: 6px 12px;
+        overflow: visible;
       }
       .kw-len-group {
-        border-right: 1px solid rgba(255, 255, 255, 0.16);
-        padding-right: 8px;
-        align-content: flex-start;
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        padding-right: 10px;
+        gap: 4px 5px;
       }
       .kw-grid-slot {
-        height: 374px;
-        min-height: 374px;
-        max-height: 374px;
+        height: 350px;
+        min-height: 350px;
+        max-height: 350px;
         align-self: center;
       }
       .kw-comic-bubble {
-        max-width: 900px;
+        max-width: 940px;
       }
       .kw-footer-meta {
-        max-width: 64%;
+        max-width: 66%;
       }
+    }
+
+    .kw-bonus-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(245, 158, 11, 0.18);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: #fde68a;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .kw-bonus-pill:hover {
+      background: rgba(245, 158, 11, 0.32);
+    }
+    .kw-treasure-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-content: flex-start;
+      overflow-y: auto;
+      flex: 1;
+      padding: 4px 0;
+    }
+    .kw-treasure-chip {
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid #f59e0b;
+      color: #fef3c7;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
     }
 
     /* ALBUM OVERLAY MODAL */
@@ -655,7 +693,10 @@ const html = `<!DOCTYPE html>
       <!-- FOOTER CONTROLS -->
       <div class="kw-footer" id="kw-footer">
         <div class="kw-footer-meta">
-          ➕ <strong>Solo Orizz/Vert</strong> · 🍪 Segrete: <strong id="lbl-bonus-count">0</strong>
+          ➕ <strong>Solo Orizz/Vert</strong> ·
+          <button class="kw-bonus-pill" id="btn-treasure" title="Apri la Biscottiera Segreta delle parole extra trovate!">
+            🍪 Segrete: <strong id="lbl-bonus-count">0</strong> / <span id="lbl-bonus-total">0</span>
+          </button>
           <span id="lbl-scene-caption" style="margin-left:6px;opacity:0.85;"></span>
         </div>
         <div style="display:flex;gap:5px;flex-shrink:0;">
@@ -673,6 +714,18 @@ const html = `<!DOCTYPE html>
           <button class="kw-pill-btn" id="btn-album-close">✖ Chiudi</button>
         </div>
         <div class="kw-album-grid" id="kw-album-grid"></div>
+      </div>
+
+      <!-- TREASURE TROVE (BISCOTTIERA SEGRETA) MODAL -->
+      <div class="kw-album-modal" id="kw-treasure-modal">
+        <div class="kw-album-header">
+          <span id="lbl-treasure-title">🍪 Biscottiera Segreta — Parole Bonus Trovate</span>
+          <button class="kw-pill-btn" id="btn-treasure-close">✖ Chiudi</button>
+        </div>
+        <div style="font-size:13px;color:#cbd5e1;">
+          Tutte le parole italiane reali in questa griglia (verificate su dizionario <em>it_IT</em>) che non erano tra le parole principali finiscono qui nel tuo tesoro segreto!
+        </div>
+        <div class="kw-treasure-chips" id="kw-treasure-chips"></div>
       </div>
     </div>
   </div>
@@ -715,6 +768,7 @@ const html = `<!DOCTYPE html>
       hintedCoords = [];
       document.getElementById('kw-stage').classList.remove('peeking');
       document.getElementById('kw-album-modal').classList.remove('visible');
+      document.getElementById('kw-treasure-modal').classList.remove('visible');
       document.getElementById('kw-comic-bubble').classList.remove('visible');
       document.getElementById('kw-current-word').classList.remove('visible');
       renderAll();
@@ -740,6 +794,7 @@ const html = `<!DOCTYPE html>
       document.getElementById('lbl-tiles-left').textContent =
         'Tessere attive: ' + engine.getActiveTileCount() + ' · Parole: ' + solvedCount + '/' + totalCount;
       document.getElementById('lbl-bonus-count').textContent = engine.bonusWordsFound.size;
+      document.getElementById('lbl-bonus-total').textContent = (lvl.bonus_words || []).length;
 
       // Nano Banana Cartoon Character-Consistency Backdrop
       const bgImg = document.getElementById('kw-bg-img');
@@ -926,11 +981,30 @@ const html = `<!DOCTYPE html>
           }, 900);
         }
       } else if (res.status === 'bonus_word') {
-        showComicBubble('🍪', res.word + ' (Parola Segreta!)', 'Questa parola extra finisce nella biscottiera bonus!', 'Bonus +1');
+        showComicBubble('🍪', res.word + ' — Parola Segreta!', 'Bravissimo! Aggiunta al Tesoro Segreto (' + engine.bonusWordsFound.size + '/' + (engine.level.bonus_words || []).length + ')!', 'Biscottiera +1');
         speakItalian('Parola segreta: ' + res.word);
+      } else if (res.status === 'already_solved') {
+        showComicBubble('✅', res.word, 'Questa parola l’avevi già scoperta nello schema!', 'Già trovata');
+      } else if (res.status === 'already_bonus') {
+        showComicBubble('🍪', res.word, 'Questa parola segreta è già nella tua biscottiera!', 'Già nel tesoro');
+      } else if (res.status === 'not_found' && res.word && res.word.length >= 3) {
+        showComicBubble('🤔', res.word, 'Non risulta nel dizionario italiano di questa griglia. Prova un’altra strada!', 'Riprova');
       }
       renderAll();
       updateDragVisuals();
+    }
+
+    function renderTreasure() {
+      const chipsEl = document.getElementById('kw-treasure-chips');
+      const total = (engine.level.bonus_words || []).length;
+      const found = Array.from(engine.bonusWordsFound).sort((a, b) => a.length - b.length || a.localeCompare(b));
+      document.getElementById('lbl-treasure-title').textContent =
+        '🍪 Biscottiera Segreta — ' + found.length + ' / ' + total + ' parole scoperte';
+      if (!found.length) {
+        chipsEl.innerHTML = '<div style="color:#94a3b8;font-size:13px;">Ancora nessuna parola segreta trovata in questo livello. Prova a strisciare parole italiane extra (es. SOL, SOMA, ARARE...)!</div>';
+        return;
+      }
+      chipsEl.innerHTML = found.map(w => '<span class="kw-treasure-chip">🍪 ' + w + '</span>').join('');
     }
 
     function renderAlbum() {
@@ -1002,11 +1076,22 @@ const html = `<!DOCTYPE html>
 
     document.getElementById('btn-album').addEventListener('click', () => {
       renderAlbum();
+      document.getElementById('kw-treasure-modal').classList.remove('visible');
       document.getElementById('kw-album-modal').classList.toggle('visible');
     });
 
     document.getElementById('btn-album-close').addEventListener('click', () => {
       document.getElementById('kw-album-modal').classList.remove('visible');
+    });
+
+    document.getElementById('btn-treasure').addEventListener('click', () => {
+      renderTreasure();
+      document.getElementById('kw-album-modal').classList.remove('visible');
+      document.getElementById('kw-treasure-modal').classList.toggle('visible');
+    });
+
+    document.getElementById('btn-treasure-close').addEventListener('click', () => {
+      document.getElementById('kw-treasure-modal').classList.remove('visible');
     });
 
     document.getElementById('btn-peek').addEventListener('click', () => {
