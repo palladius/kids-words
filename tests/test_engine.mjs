@@ -3,19 +3,27 @@ import test from 'node:test';
 import { KidsWordsEngine } from '../src/engine.mjs';
 import { LEVELS_IT } from '../src/levels_it.mjs';
 
-test('Phase 1: All Italian levels have dense words (11-15 Seby, 18-20 Ale/12-char), ORTHOGONAL ONLY, B1/B2/C1 explanations, and D(r,c) >= 1 invariant', () => {
+test('Phase 1: All Italian levels have dense words (11-16 Seby, 20-24 Ale 3x4/3x5/4x4), sorted by length, ORTHOGONAL ONLY, and D(r,c) >= 1 invariant', () => {
   assert.ok(LEVELS_IT.length >= 7, 'Should have at least 7 curated Italian levels (Seby + Ale)');
   for (const level of LEVELS_IT) {
     const engine = new KidsWordsEngine(level);
     if (level.tier === 'seby') {
       assert.ok(
-        level.targets.length >= 10 && level.targets.length <= 15,
-        `Seby level ${level.id} must have 10-15 words, found ${level.targets.length}`
+        level.targets.length >= 11 && level.targets.length <= 16,
+        `Seby level ${level.id} must have 11-16 words, found ${level.targets.length}`
       );
     } else {
       assert.ok(
-        level.targets.length >= 18 && level.targets.length <= 20,
-        `Ale 12-char level ${level.id} must have 18-20 words, found ${level.targets.length}`
+        level.targets.length >= 20 && level.targets.length <= 24,
+        `Ale level ${level.id} must have 20-24 words, found ${level.targets.length}`
+      );
+    }
+
+    // Verify targets are grouped/sorted by length ascending
+    for (let i = 1; i < level.targets.length; i++) {
+      assert.ok(
+        level.targets[i].word.length >= level.targets[i - 1].word.length,
+        `Targets in ${level.id} must be sorted by length ascending (${level.targets[i - 1].word} before ${level.targets[i].word})`
       );
     }
 
@@ -80,11 +88,13 @@ test('Phase 3: Solving all words except the last one leaves exact K letters for 
   }
 });
 
-test('Phase 4: Immutable grid layout (no display:none shift on swipe/bubble, bottom dock below matrix) & Nano Banana cartoon scenes', async () => {
+test('Phase 4: Immutable grid layout, widescreen desktop media query, length-grouped word bank & Nano Banana scenes', async () => {
   const fs = await import('node:fs');
   const html = fs.readFileSync(new URL('../public/index.html', import.meta.url), 'utf8');
 
-  assert.match(html, /grid-template-rows:\s*150px\s+36px\s+272px\s+76px\s+44px/);
+  assert.match(html, /grid-template-rows:\s*130px\s+34px\s+286px\s+74px\s+44px/);
+  assert.match(html, /@media\s*\(min-width:\s*940px\)/, 'Must have intelligent widescreen desktop layout');
+  assert.match(html, /kw-len-group/, 'Target words must be grouped by length (3L | 4L | 5L)');
 
   const gridPos = html.indexOf('id="kw-grid-slot"');
   const dockPos = html.indexOf('id="kw-bottom-dock"');

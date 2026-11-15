@@ -34,20 +34,22 @@ const html = `<!DOCTYPE html>
       --ale-color: #dc2626;
       --gold: #f59e0b;
       --radius: 16px;
+      --tile: 62px;
+      --gap: 8px;
       --font-sans: 'Nunito', 'Fredoka', system-ui, -apple-system, sans-serif;
     }
     * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
     body {
       margin: 0;
       padding: 8px;
-      background: #0f172a;
+      background: #0b1120;
       color: #f8fafc;
       font-family: var(--font-sans);
     }
     .kw-root {
       font-family: var(--font-sans);
-      color: var(--foreground, #f8fafc);
-      max-width: 780px;
+      color: #f8fafc;
+      max-width: 560px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -59,14 +61,14 @@ const html = `<!DOCTYPE html>
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      background: rgba(15, 23, 42, 0.92);
+      background: rgba(15, 23, 42, 0.94);
       color: #f8fafc;
       padding: 8px 14px;
       border-radius: var(--radius);
       border: 1px solid rgba(255, 255, 255, 0.16);
-      height: 50px;
+      min-height: 48px;
     }
-    .kw-profiles { display: flex; gap: 6px; align-items: center; }
+    .kw-profiles { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
     .kw-profile-btn {
       display: inline-flex;
       align-items: center;
@@ -102,23 +104,29 @@ const html = `<!DOCTYPE html>
     .kw-pill-btn:hover { background: rgba(255, 255, 255, 0.25); }
 
     /* =====================================================================
-     * IMMUTABLE 5-ROW STAGE LAYOUT
-     * Every row has a strict, locked pixel height so #kw-grid-wrap NEVER
-     * shifts by even 1px when swiping or when explanations appear below!
+     * IMMUTABLE STAGE LAYOUT (Mobile-first 5-row vertical stack)
+     * Matrix container NEVER shifts by 1px on swipe or comic explanation!
      * ===================================================================== */
     .kw-stage {
       position: relative;
       border-radius: 20px;
       overflow: hidden;
       border: 2px solid rgba(255, 255, 255, 0.24);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5);
       height: 626px;
       min-height: 626px;
       max-height: 626px;
       display: grid;
-      grid-template-rows: 150px 36px 272px 76px 44px;
+      grid-template-rows: 130px 34px 286px 74px 44px;
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "hud"
+        "swipe"
+        "grid"
+        "dock"
+        "footer";
       gap: 6px;
-      padding: 12px;
+      padding: 10px;
       color: #fff;
       background: #0f172a;
     }
@@ -139,34 +147,33 @@ const html = `<!DOCTYPE html>
       display: block;
       transition: filter 0.35s ease, transform 0.35s ease;
     }
-    /* Subtle vignette so HUD and grid pop clearly while keeping Ale & Seby vivid */
     .kw-bg-overlay {
       position: absolute;
       inset: 0;
       background: linear-gradient(
         180deg,
-        rgba(15, 23, 42, 0.45) 0%,
-        rgba(15, 23, 42, 0.08) 35%,
-        rgba(15, 23, 42, 0.08) 70%,
-        rgba(15, 23, 42, 0.55) 100%
+        rgba(15, 23, 42, 0.38) 0%,
+        rgba(15, 23, 42, 0.04) 40%,
+        rgba(15, 23, 42, 0.08) 72%,
+        rgba(15, 23, 42, 0.48) 100%
       );
       pointer-events: none;
     }
 
-    /* ROW 1: HUD TOP (150px locked — fits up to 20 words cleanly!) */
+    /* COMPACT GROUPED WORD BANK (3-3-3 | 4-4-4 | 5-5) */
     .kw-hud-top {
+      grid-area: hud;
       position: relative;
       z-index: 2;
-      height: 150px;
-      min-height: 150px;
-      max-height: 150px;
+      height: 130px;
+      min-height: 130px;
+      max-height: 130px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 5px;
-      background: rgba(15, 23, 42, 0.76);
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.72);
       backdrop-filter: blur(8px);
-      padding: 8px 10px;
+      padding: 7px 10px;
       border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.2);
       overflow: hidden;
@@ -175,69 +182,102 @@ const html = `<!DOCTYPE html>
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       flex-shrink: 0;
+      gap: 8px;
     }
     .kw-targets {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px 5px;
-      justify-content: center;
-      align-content: center;
+      align-items: flex-start;
+      align-content: flex-start;
+      gap: 6px 14px;
       flex: 1;
       overflow-y: auto;
+    }
+    .kw-len-group {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 3px 4px;
+      padding-right: 6px;
+      border-right: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .kw-len-group:last-child {
+      border-right: none;
+      padding-right: 0;
+    }
+    .kw-len-tag {
+      font-size: 10px;
+      font-weight: 900;
+      color: #fde68a;
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 5px;
+      padding: 1px 4px;
+      margin-right: 2px;
+      line-height: 1.2;
     }
     .kw-word-slot {
       display: inline-flex;
       align-items: center;
-      gap: 2px;
-      background: rgba(15, 23, 42, 0.84);
-      padding: 3px 5px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.24);
+      gap: 1.5px;
+      background: rgba(15, 23, 42, 0.85);
+      padding: 2px 4px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
       cursor: pointer;
-      height: 23px;
-      font-size: 11px;
+      height: 19px;
+      font-size: 10px;
     }
     .kw-word-slot.solved {
       background: rgba(22, 163, 74, 0.94);
       border-color: #86efac;
+      padding: 2px 5px;
     }
     .kw-slot-box {
-      width: 15px;
-      height: 17px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.18);
+      width: 11px;
+      height: 13px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.16);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 11px;
+      font-size: 10px;
       color: #fff;
+      line-height: 1;
+    }
+    .kw-word-slot.solved .kw-slot-box {
+      background: transparent;
+      width: auto;
+      padding: 0 0.5px;
+      letter-spacing: 0.4px;
     }
 
-    /* ROW 2: SWIPE BAR (36px locked — uses opacity/visibility, NEVER display:none) */
+    /* SWIPE LIVE WORD BAR (opacity/visibility only — NEVER display:none!) */
     .kw-swipe-slot {
+      grid-area: swipe;
       position: relative;
       z-index: 3;
-      height: 36px;
-      min-height: 36px;
-      max-height: 36px;
+      height: 34px;
+      min-height: 34px;
+      max-height: 34px;
       display: flex;
       align-items: center;
       justify-content: center;
       pointer-events: none;
     }
     .kw-current-word {
-      height: 32px;
+      height: 30px;
       min-width: 96px;
-      padding: 0 18px;
+      padding: 0 16px;
       border-radius: 999px;
       background: #f59e0b;
       color: #0f172a;
       font-weight: 900;
-      font-size: 17px;
+      font-size: 16px;
       letter-spacing: 3px;
       display: inline-flex;
       align-items: center;
@@ -255,13 +295,14 @@ const html = `<!DOCTYPE html>
       transform: scale(1);
     }
 
-    /* ROW 3: IMMUTABLE MATRIX SLOT (272px locked) */
+    /* IMMUTABLE MATRIX SLOT */
     .kw-grid-slot {
+      grid-area: grid;
       position: relative;
       z-index: 2;
-      height: 272px;
-      min-height: 272px;
-      max-height: 272px;
+      height: 286px;
+      min-height: 286px;
+      max-height: 286px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -272,12 +313,12 @@ const html = `<!DOCTYPE html>
       transition: opacity 0.25s ease;
     }
     .kw-stage.peeking .kw-grid-wrap {
-      opacity: 0.08;
+      opacity: 0.06;
       pointer-events: none;
     }
     .kw-grid {
       display: grid;
-      gap: 10px;
+      gap: var(--gap);
       position: relative;
     }
     .kw-svg-laser {
@@ -289,13 +330,13 @@ const html = `<!DOCTYPE html>
       z-index: 4;
     }
     .kw-tile {
-      width: 68px;
-      height: 68px;
-      border-radius: 16px;
+      width: var(--tile);
+      height: var(--tile);
+      border-radius: 15px;
       background: rgba(255, 251, 235, 0.88);
       backdrop-filter: blur(4px);
       border: 3px solid #f59e0b;
-      box-shadow: 0 5px 0 #b45309, 0 8px 14px rgba(0, 0, 0, 0.38);
+      box-shadow: 0 4px 0 #b45309, 0 8px 14px rgba(0, 0, 0, 0.38);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -305,7 +346,7 @@ const html = `<!DOCTYPE html>
       transition: transform 0.12s ease, opacity 0.35s ease, background-color 0.12s ease;
     }
     .kw-tile-letter {
-      font-size: 27px;
+      font-size: 25px;
       font-weight: 900;
       color: #1e293b;
       line-height: 1;
@@ -313,26 +354,25 @@ const html = `<!DOCTYPE html>
     }
     .kw-tile-dep {
       position: absolute;
-      top: 4px;
-      right: 5px;
+      top: 3px;
+      right: 4px;
       font-size: 10px;
       font-weight: 800;
       color: #92400e;
       background: rgba(245, 158, 11, 0.25);
       border-radius: 999px;
-      padding: 0 5px;
+      padding: 0 4px;
       pointer-events: none;
     }
-    /* No translateY shift on selection so tile hitboxes never move under the cursor */
     .kw-tile.selected {
       background: #fde047;
       border-color: #ca8a04;
-      box-shadow: 0 5px 0 #854d0e, 0 0 16px rgba(250, 204, 21, 0.9);
+      box-shadow: 0 4px 0 #854d0e, 0 0 16px rgba(250, 204, 21, 0.9);
       transform: scale(1.04);
     }
     .kw-tile.hinted {
       border-color: #22c55e;
-      box-shadow: 0 5px 0 #15803d, 0 0 18px rgba(34, 197, 94, 0.95);
+      box-shadow: 0 4px 0 #15803d, 0 0 18px rgba(34, 197, 94, 0.95);
     }
     .kw-tile.depleted {
       opacity: 0;
@@ -340,13 +380,14 @@ const html = `<!DOCTYPE html>
       pointer-events: none;
     }
 
-    /* ROW 4: BOTTOM COMIC / EXPLANATION DOCK (76px locked — BELOW the grid!) */
+    /* BOTTOM COMIC / EXPLANATION DOCK */
     .kw-bottom-dock {
+      grid-area: dock;
       position: relative;
       z-index: 3;
-      height: 76px;
-      min-height: 76px;
-      max-height: 76px;
+      height: 74px;
+      min-height: 74px;
+      max-height: 74px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -354,7 +395,7 @@ const html = `<!DOCTYPE html>
     .kw-comic-bubble {
       width: 100%;
       max-width: 640px;
-      height: 72px;
+      height: 70px;
       background: rgba(255, 251, 235, 0.96);
       color: #1e293b;
       border: 3px solid #f59e0b;
@@ -375,10 +416,10 @@ const html = `<!DOCTYPE html>
       visibility: visible;
       transform: translateY(0);
     }
-    .kw-comic-emoji { font-size: 28px; flex-shrink: 0; }
+    .kw-comic-emoji { font-size: 26px; flex-shrink: 0; }
     .kw-comic-text {
       font-size: 13px;
-      line-height: 1.28;
+      line-height: 1.25;
       font-weight: 700;
       overflow: hidden;
       display: -webkit-box;
@@ -397,8 +438,9 @@ const html = `<!DOCTYPE html>
       margin-left: 4px;
     }
 
-    /* ROW 5: FOOTER (44px locked) */
+    /* FOOTER */
     .kw-footer {
+      grid-area: footer;
       position: relative;
       z-index: 2;
       height: 44px;
@@ -435,8 +477,63 @@ const html = `<!DOCTYPE html>
     }
 
     /* =====================================================================
-     * ALBUM DEI RICORDI MODAL (Overlay inside #kw-stage, zero shift!)
+     * DESKTOP WIDESCREEN INTELLIGENT LAYOUT (>= 940px)
+     * Uses extra screen width so the full cartoon artwork breathes cleanly
+     * on the left while the grouped words sit in crisp multi-column stacks
+     * and the immutable swipe matrix occupies the right column!
      * ===================================================================== */
+    @media (min-width: 940px) {
+      .kw-root {
+        max-width: 1140px;
+        padding-top: 6px;
+      }
+      .kw-stage {
+        height: 660px;
+        min-height: 660px;
+        max-height: 660px;
+        padding: 16px;
+        gap: 10px 18px;
+        grid-template-columns: 1.08fr 0.92fr;
+        grid-template-rows: 132px 34px 330px 74px 44px;
+        grid-template-areas:
+          "hud   swipe"
+          "hud   grid"
+          "art   grid"
+          "dock  dock"
+          "footer footer";
+      }
+      .kw-hud-top {
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        padding: 10px 12px;
+      }
+      .kw-targets {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 8px 10px;
+        align-items: start;
+      }
+      .kw-len-group {
+        border-right: 1px solid rgba(255, 255, 255, 0.16);
+        padding-right: 8px;
+        align-content: flex-start;
+      }
+      .kw-grid-slot {
+        height: 374px;
+        min-height: 374px;
+        max-height: 374px;
+        align-self: center;
+      }
+      .kw-comic-bubble {
+        max-width: 900px;
+      }
+      .kw-footer-meta {
+        max-width: 64%;
+      }
+    }
+
+    /* ALBUM OVERLAY MODAL */
     .kw-album-modal {
       position: absolute;
       inset: 12px;
@@ -469,7 +566,7 @@ const html = `<!DOCTYPE html>
     }
     .kw-album-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 10px;
       flex: 1;
       overflow-y: auto;
@@ -508,8 +605,8 @@ const html = `<!DOCTYPE html>
     <div class="kw-topbar">
       <div class="kw-profiles">
         <span style="font-size:12px;font-weight:800;">🐧 Giocatore:</span>
-        <button class="kw-profile-btn active" data-tier="seby" id="btn-tier-seby">🏎️ Seby (6a · 3×3)</button>
-        <button class="kw-profile-btn" data-tier="ale" id="btn-tier-ale">🐉 Ale / Sfida (12 lett · 20 parole)</button>
+        <button class="kw-profile-btn active" data-tier="seby" id="btn-tier-seby">🏎️ Seby (6a · 3×3/3×4)</button>
+        <button class="kw-profile-btn" data-tier="ale" id="btn-tier-ale">🐉 Ale / Sfida (3×4 · 3×5 · 4×4)</button>
       </div>
       <div class="kw-level-nav">
         <button class="kw-pill-btn" id="btn-prev-lvl" title="Livello precedente">◀</button>
@@ -525,21 +622,21 @@ const html = `<!DOCTYPE html>
         <div class="kw-bg-overlay"></div>
       </div>
 
-      <!-- ROW 1: HUD TOP (112px locked) -->
+      <!-- HUD TOP: Compact Word Bank grouped by length (3 | 4 | 5) -->
       <div class="kw-hud-top" id="kw-hud-top">
         <div class="kw-theme-row">
           <span id="lbl-theme">🐝 Il Prato delle Api</span>
-          <span id="lbl-tiles-left" style="color:#fde68a;">Tessere attive: 9 · Parole: 0/8</span>
+          <span id="lbl-tiles-left" style="color:#fde68a;">Tessere attive: 9 · Parole: 0/11</span>
         </div>
         <div class="kw-targets" id="kw-targets"></div>
       </div>
 
-      <!-- ROW 2: SWIPE LIVE WORD SLOT (36px locked) -->
+      <!-- SWIPE LIVE WORD SLOT -->
       <div class="kw-swipe-slot" id="kw-swipe-slot">
         <div class="kw-current-word" id="kw-current-word"></div>
       </div>
 
-      <!-- ROW 3: IMMUTABLE GRID SLOT (324px locked) -->
+      <!-- IMMUTABLE MATRIX SLOT -->
       <div class="kw-grid-slot" id="kw-grid-slot">
         <div class="kw-grid-wrap" id="kw-grid-wrap">
           <svg class="kw-svg-laser" id="kw-svg-laser"></svg>
@@ -547,7 +644,7 @@ const html = `<!DOCTYPE html>
         </div>
       </div>
 
-      <!-- ROW 4: BOTTOM COMIC / EXPLANATION DOCK (76px locked, BELOW the matrix) -->
+      <!-- BOTTOM COMIC / EXPLANATION DOCK (BELOW the matrix) -->
       <div class="kw-bottom-dock" id="kw-bottom-dock">
         <div class="kw-comic-bubble" id="kw-comic-bubble">
           <span class="kw-comic-emoji" id="kw-comic-emoji">🐝</span>
@@ -555,7 +652,7 @@ const html = `<!DOCTYPE html>
         </div>
       </div>
 
-      <!-- ROW 5: FOOTER CONTROLS (44px locked) -->
+      <!-- FOOTER CONTROLS -->
       <div class="kw-footer" id="kw-footer">
         <div class="kw-footer-meta">
           ➕ <strong>Solo Orizz/Vert</strong> · 🍪 Segrete: <strong id="lbl-bonus-count">0</strong>
@@ -651,40 +748,67 @@ const html = `<!DOCTYPE html>
         bgImg.setAttribute('src', nextSrc);
       }
 
-      // Target slots
+      // Target slots GROUPED BY LENGTH ascending (3 3 3 | 4 4 4 | 5 5)
       const targetsEl = document.getElementById('kw-targets');
       targetsEl.innerHTML = '';
-      for (const t of lvl.targets) {
-        const solved = engine.solvedWords.has(t.word);
-        const slot = document.createElement('div');
-        slot.className = 'kw-word-slot' + (solved ? ' solved' : '');
-        slot.title = solved ? 'Riascolta ' + t.word : 'Parola da ' + t.word.length + ' lettere';
-        const emojiSpan = document.createElement('span');
-        emojiSpan.textContent = solved ? (t.emoji || '⭐') : '🔒';
-        slot.appendChild(emojiSpan);
-        for (let i = 0; i < t.word.length; i++) {
-          const box = document.createElement('span');
-          box.className = 'kw-slot-box';
-          box.textContent = solved ? t.word[i] : '';
-          slot.appendChild(box);
-        }
-        slot.addEventListener('click', () => {
-          if (solved) {
-            if (t.needs_explanation) {
-              showComicBubble(t.emoji, t.word, t.explanation_text, 'Parola Curiosa ' + t.cefr);
-              speakItalian(t.word + '! ' + t.explanation_text);
-            } else {
-              showComicBubble(t.emoji || '🌟', t.word, 'Parola già scoperta! Clicca le altre per riascoltarle.', 'Parola ' + t.cefr);
-              speakItalian(t.word);
-            }
-          }
-        });
-        targetsEl.appendChild(slot);
+      const sortedTargets = [...lvl.targets].sort((a, b) => a.word.length - b.word.length || a.word.localeCompare(b.word));
+      const groups = new Map();
+      for (const t of sortedTargets) {
+        const len = t.word.length;
+        if (!groups.has(len)) groups.set(len, []);
+        groups.get(len).push(t);
       }
 
-      // Immutable Grid
+      for (const [len, items] of groups.entries()) {
+        const groupEl = document.createElement('div');
+        groupEl.className = 'kw-len-group';
+        groupEl.dataset.wordLen = String(len);
+
+        const tag = document.createElement('span');
+        tag.className = 'kw-len-tag';
+        tag.textContent = len + 'L';
+        tag.title = items.length + ' parole da ' + len + ' lettere';
+        groupEl.appendChild(tag);
+
+        for (const t of items) {
+          const solved = engine.solvedWords.has(t.word);
+          const slot = document.createElement('div');
+          slot.className = 'kw-word-slot' + (solved ? ' solved' : '');
+          slot.title = solved ? 'Riascolta ' + t.word : 'Parola da ' + t.word.length + ' lettere';
+
+          for (let i = 0; i < t.word.length; i++) {
+            const box = document.createElement('span');
+            box.className = 'kw-slot-box';
+            box.textContent = solved ? t.word[i] : '';
+            slot.appendChild(box);
+          }
+
+          if (solved && t.needs_explanation) {
+            const infoDot = document.createElement('span');
+            infoDot.textContent = ' ' + (t.emoji || '💡');
+            infoDot.style.fontSize = '10px';
+            slot.appendChild(infoDot);
+          }
+
+          slot.addEventListener('click', () => {
+            if (solved) {
+              if (t.needs_explanation) {
+                showComicBubble(t.emoji, t.word, t.explanation_text, 'Parola Curiosa ' + t.cefr);
+                speakItalian(t.word + '! ' + t.explanation_text);
+              } else {
+                showComicBubble(t.emoji || '🌟', t.word, 'Parola già scoperta! Clicca le altre per riascoltarle.', 'Parola ' + t.cefr);
+                speakItalian(t.word);
+              }
+            }
+          });
+          groupEl.appendChild(slot);
+        }
+        targetsEl.appendChild(groupEl);
+      }
+
+      // Immutable Grid (62px tile + 8px gap = 70px pitch)
       const gridEl = document.getElementById('kw-grid');
-      gridEl.style.gridTemplateColumns = 'repeat(' + lvl.grid.cols + ', 68px)';
+      gridEl.style.gridTemplateColumns = 'repeat(' + lvl.grid.cols + ', var(--tile))';
       gridEl.innerHTML = '';
       for (let r = 0; r < lvl.grid.rows; r++) {
         for (let c = 0; c < lvl.grid.cols; c++) {
@@ -761,9 +885,10 @@ const html = `<!DOCTYPE html>
         svg.innerHTML = '';
         return;
       }
+      // 62px tile + 8px gap = 70px pitch, center at 31px
       const pts = dragPath.map(([r, c]) => {
-        const x = c * 78 + 34;
-        const y = r * 78 + 34;
+        const x = c * 70 + 31;
+        const y = r * 70 + 31;
         return x + ',' + y;
       }).join(' ');
       svg.innerHTML = '<polyline points="' + pts + '" fill="none" stroke="#f59e0b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.88"/>';
@@ -796,12 +921,12 @@ const html = `<!DOCTYPE html>
           const kidName = currentTier === 'seby' ? 'Seby' : 'Ale';
           const allWords = engine.level.targets.map(x => x.word).join(', ');
           setTimeout(() => {
-            showComicBubble('🎉', 'Quadro Svelato, bravo ' + kidName + '!', 'Hai scoperto tutte le parole: ' + allWords + '!', 'Livello Completato');
-            speakItalian('Evviva ' + kidName + '! Hai scoperto tutte le parole: ' + allWords + '!');
+            showComicBubble('🎉', 'Quadro Svelato, bravo ' + kidName + '!', 'Hai scoperto tutte le ' + engine.level.targets.length + ' parole!', 'Livello Completato');
+            speakItalian('Evviva ' + kidName + '! Hai scoperto tutte le parole!');
           }, 900);
         }
       } else if (res.status === 'bonus_word') {
-        showComicBubble('🍪', res.word + ' (Parola Segreta!)', 'Questa parola finisce nella biscottiera bonus!', 'Bonus +1');
+        showComicBubble('🍪', res.word + ' (Parola Segreta!)', 'Questa parola extra finisce nella biscottiera bonus!', 'Bonus +1');
         speakItalian('Parola segreta: ' + res.word);
       }
       renderAll();
@@ -814,7 +939,7 @@ const html = `<!DOCTYPE html>
       LEVELS_IT.forEach((lvl) => {
         const card = document.createElement('div');
         card.className = 'kw-album-card';
-        const tierBadge = lvl.tier === 'seby' ? '🏎️ Seby 3×3' : '🐉 Ale 4×4';
+        const tierBadge = lvl.tier === 'seby' ? '🏎️ Seby' : '🐉 Ale';
         card.innerHTML =
           '<img src="' + (SCENES_IMG[lvl.scene_id] || SCENES_IMG.bees_meadow) + '" alt="' + lvl.theme + '"/>' +
           '<div class="kw-album-card-caption">' +
