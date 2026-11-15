@@ -1,10 +1,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { LEVELS_IT } from '../src/levels_it.mjs';
 import { KidsWordsEngine } from '../src/engine.mjs';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PUBLIC_DIR = path.resolve(__dirname, '../public');
+
 function loadAssetDataUri(filename) {
-  const filePath = path.join('/home/riccardo/git/kids-words/public/assets', filename);
+  const filePath = path.join(PUBLIC_DIR, 'assets', filename);
   const buf = fs.readFileSync(filePath);
   return 'data:image/webp;base64,' + buf.toString('base64');
 }
@@ -911,5 +915,6 @@ const html = `<!DOCTYPE html>
 </body>
 </html>`;
 
-fs.writeFileSync('/home/riccardo/git/kids-words/public/index.html', html);
-console.log('Built self-contained /home/riccardo/git/kids-words/public/index.html (' + html.length + ' bytes)');
+const outFile = path.join(PUBLIC_DIR, 'index.html');
+fs.writeFileSync(outFile, html);
+console.log('Built self-contained ' + outFile + ' (' + html.length + ' bytes)');
