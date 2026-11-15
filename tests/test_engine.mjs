@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { KidsWordsEngine } from '../src/engine.mjs';
 import { LEVELS_IT } from '../src/levels_it.mjs';
+import { LevelProgression } from '../src/progression.mjs';
 
 test('Phase 1: All Italian levels have dense words (11-16 Seby, 20-24 Ale 3x4/3x5/4x4), sorted by length, ORTHOGONAL ONLY, and D(r,c) >= 1 invariant', () => {
   assert.ok(LEVELS_IT.length >= 7, 'Should have at least 7 curated Italian levels (Seby + Ale)');
@@ -190,4 +191,59 @@ test('Phase 6: Exhaustive Italian dictionary completeness (every Hunspell it_IT 
       `Regression fail on it_ale_001: "${mustAccept}" must be accepted!`
     );
   }
+});
+
+test('Phase 7: PuffinLogin stateful level progression (Anon RAM-only vs Ale/Seby cross-device vs Papà Admin) & Footer version/GH link', async () => {
+  const fs = await import('node:fs');
+  const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  const html = fs.readFileSync(new URL('../public/index.html', import.meta.url), 'utf8');
+
+  // Verify PuffinLogin, Leaderboard, Version & GitHub link in HTML
+  assert.match(html, /<puffin-login[^>]*app-id="kids-words"/);
+  assert.match(html, /<puffin-leaderboard[^>]*filter-game="kids-words"/);
+  assert.match(html, new RegExp(`v${pkg.version.replace(/\./g, '\\.')}`));
+  assert.match(html, /https:\/\/github\.com\/palladius\/kids-words/);
+  assert.ok(fs.existsSync(new URL('../public/src/puffin-login.js', import.meta.url)), 'puffin-login.js must exist in public/src/');
+
+  // Mock localStorage
+  const store = new Map();
+  const mockStorage = {
+    getItem: (k) => (store.has(k) ? store.get(k) : null),
+    setItem: (k, v) => store.set(k, String(v)),
+  };
+
+  const p1 = new LevelProgression({ totalByTier: { seby: 3, ale: 4 }, storage: mockStorage });
+
+  // 1. Anonymous starts at idx 0, unlocks idx 1 in RAM after winning level 1, resets on F5 (new instance)
+  assert.equal(p1.isLevelUnlocked(null, 'ale', 0), true);
+  assert.equal(p1.isLevelUnlocked(null, 'ale', 1), false);
+  p1.recordLevelCompleted(null, 'ale', 0);
+  assert.equal(p1.isLevelUnlocked(null, 'ale', 1), true);
+  assert.equal(p1.isLevelUnlocked('guest', 'ale', 1), false, 'Guest and null should not leak storage across sessions');
+
+  const pAfterF5 = new LevelProgression({ totalByTier: { seby: 3, ale: 4 }, storage: mockStorage });
+  assert.equal(pAfterF5.isLevelUnlocked(null, 'ale', 1), false, 'Anonymous MUST reset to Level 1 after F5!');
+
+  // 2. Ale wins Level 1 & Level 2 -> persists across F5, while Seby remains locked at Level 1!
+  pAfterF5.recordLevelCompleted('ale', 'ale', 0);
+  pAfterF5.recordLevelCompleted('ale', 'ale', 1);
+  const pNewSession = new LevelProgression({ totalByTier: { seby: 3, ale: 4 }, storage: mockStorage });
+  assert.equal(pNewSession.getUnlockedMaxIdx('ale', 'ale'), 2, 'Ale should have Level 3 (idx 2) unlocked after F5');
+  assert.equal(pNewSession.getUnlockedMaxIdx('seby', 'seby'), 0, 'Seby must still be at Level 1 (idx 0)');
+  assert.equal(pNewSession.isLevelUnlocked('seby', 'seby', 1), false);
+
+  // 3. Cross-device Cloud Firestore sync unlocks Ale on a fresh device (empty localStorage)
+  const freshDevice = new LevelProgression({ totalByTier: { seby: 3, ale: 4 }, storage: null });
+  assert.equal(freshDevice.getUnlockedMaxIdx('ale', 'ale'), 0);
+  freshDevice.mergeCloudScores('ale', [
+    { player_id: 'ale', extra: { tier: 'ale', level_index: 2, unlocked_max_idx: 3 } },
+    { player_id: 'seby', extra: { tier: 'seby', level_index: 0, unlocked_max_idx: 1 } },
+  ]);
+  assert.equal(freshDevice.getUnlockedMaxIdx('ale', 'ale'), 3, 'Ale should sync Level 4 (idx 3) from Cloud Firestore');
+  assert.equal(freshDevice.getUnlockedMaxIdx('seby', 'seby'), 0, 'Seby scores must NOT unlock Ale');
+
+  // 4. Papà Admin (riccardo) has all levels unlocked
+  assert.equal(freshDevice.isAdmin('riccardo'), true);
+  assert.equal(freshDevice.getUnlockedMaxIdx('riccardo', 'ale'), 3);
+  assert.equal(freshDevice.getUnlockedMaxIdx('riccardo', 'seby'), 2);
 });

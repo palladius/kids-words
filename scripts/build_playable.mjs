@@ -3,9 +3,13 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LEVELS_IT } from '../src/levels_it.mjs';
 import { KidsWordsEngine } from '../src/engine.mjs';
+import { LevelProgression } from '../src/progression.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PUBLIC_DIR = path.resolve(__dirname, '../public');
+const ROOT_DIR = path.resolve(__dirname, '..');
+const PUBLIC_DIR = path.resolve(ROOT_DIR, 'public');
+const PKG = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'package.json'), 'utf8'));
+const APP_VERSION = PKG.version || '1.2.0';
 
 function loadAssetDataUri(filename) {
   const filePath = path.join(PUBLIC_DIR, 'assets', filename);
@@ -27,7 +31,8 @@ const html = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>🔤 Kids Words — Parole in Fuga (Ale & Seby Edition)</title>
+  <title>🔤 Kids Words v${APP_VERSION} — Parole in Fuga (Ale & Seby)</title>
+  <script type="module" src="./src/puffin-login.js"></script>
   <style>
     :root {
       --seby-color: #2563eb;
@@ -636,14 +641,54 @@ const html = `<!DOCTYPE html>
       line-height: 1.25;
       color: #f8fafc;
     }
+    .kw-album-card.locked {
+      opacity: 0.55;
+      filter: grayscale(0.5);
+    }
+    .kw-pill-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .kw-debug-hidden {
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .kw-hof-wrap {
+      background: rgba(15, 23, 42, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 4px;
+    }
+    .kw-app-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .kw-app-footer a {
+      color: #93c5fd;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .kw-app-footer a:hover {
+      text-decoration: underline;
+      color: #fde68a;
+    }
   </style>
 </head>
 <body>
   <div class="kw-root">
     <div class="kw-topbar">
       <div class="kw-profiles">
-        <span style="font-size:12px;font-weight:800;">🐧 Giocatore:</span>
-        <button class="kw-profile-btn active" data-tier="seby" id="btn-tier-seby">🏎️ Seby (6a · 3×3/3×4)</button>
+        <button class="kw-profile-btn active" data-tier="seby" id="btn-tier-seby">🏎️ Seby (3×3/3×4)</button>
         <button class="kw-profile-btn" data-tier="ale" id="btn-tier-ale">🐉 Ale / Sfida (3×4 · 3×5 · 4×4)</button>
       </div>
       <div class="kw-level-nav">
@@ -651,6 +696,8 @@ const html = `<!DOCTYPE html>
         <span id="lbl-level-idx" style="font-size:12px;font-weight:800;">Livello 1 / 3</span>
         <button class="kw-pill-btn" id="btn-next-lvl" title="Livello successivo">▶</button>
         <button class="kw-pill-btn" id="btn-album" title="Apri l'Album delle Foto Cartoon di Ale & Seby">🖼️ Album</button>
+        <button class="kw-pill-btn" id="btn-hof-toggle" title="Classifica di Famiglia">🏆</button>
+        <puffin-login id="puffin-widget" app-id="kids-words" skin="it"></puffin-login>
       </div>
     </div>
 
@@ -693,7 +740,7 @@ const html = `<!DOCTYPE html>
       <!-- FOOTER CONTROLS -->
       <div class="kw-footer" id="kw-footer">
         <div class="kw-footer-meta">
-          ➕ <strong>Solo Orizz/Vert</strong> ·
+          <span id="lbl-progress-badge" style="color:#93c5fd;font-weight:800;">👤 Anonimo</span> ·
           <button class="kw-bonus-pill" id="btn-treasure" title="Apri la Biscottiera Segreta delle parole extra trovate!">
             🍪 Segrete: <strong id="lbl-bonus-count">0</strong> / <span id="lbl-bonus-total">0</span>
           </button>
@@ -702,7 +749,7 @@ const html = `<!DOCTYPE html>
         <div style="display:flex;gap:5px;flex-shrink:0;">
           <button class="kw-pill-btn" id="btn-peek" title="Clicca per ammirare Ale e Seby sullo sfondo">👀 Foto</button>
           <button class="kw-action-btn" id="btn-hint">💡 Aiuto</button>
-          <button class="kw-action-btn" id="btn-solve-one" style="background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;">✨ Indovina 1</button>
+          <button class="kw-action-btn kw-debug-hidden" id="btn-solve-one" title="Solo Papà Debug (Riccardo)" style="background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;">✨ Indovina 1</button>
           <button class="kw-pill-btn" id="btn-reset">🔄 Rigioca</button>
         </div>
       </div>
@@ -710,7 +757,7 @@ const html = `<!DOCTYPE html>
       <!-- ALBUM OVERLAY MODAL -->
       <div class="kw-album-modal" id="kw-album-modal">
         <div class="kw-album-header">
-          <span>🖼️ Galleria dei Ricordi di Ale & Seby (Clicca una scheda per giocarla!)</span>
+          <span>🖼️ Galleria dei Ricordi di Ale & Seby (Clicca una scheda sbloccata per giocarla!)</span>
           <button class="kw-pill-btn" id="btn-album-close">✖ Chiudi</button>
         </div>
         <div class="kw-album-grid" id="kw-album-grid"></div>
@@ -728,12 +775,44 @@ const html = `<!DOCTYPE html>
         <div class="kw-treasure-chips" id="kw-treasure-chips"></div>
       </div>
     </div>
+
+    <!-- HALL OF FAME (Hidden during gameplay; revealed on level completion or 🏆 button) -->
+    <section id="hof-section" class="kw-hof-wrap" hidden>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <h2 style="margin:0;font-size:16px;color:#fde68a;">🏆 Hall of Fame — Kids Words</h2>
+        <button class="kw-pill-btn" id="btn-hof-close">⬅️ Torna al Gioco</button>
+      </div>
+      <puffin-leaderboard id="game-lb" filter-game="kids-words" back-href="./"></puffin-leaderboard>
+    </section>
+
+    <!-- CARLESSIAN VERSION & GITHUB FOOTER -->
+    <footer class="kw-app-footer" id="kw-app-footer">
+      <div>
+        <strong>🔤 Kids Words</strong> (<em>Parole in Fuga</em>) · <code style="color:#fde68a;">v${APP_VERSION}</code>
+        <span style="margin-left:8px;">© Carlesso Family</span>
+      </div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
+        <a href="https://github.com/palladius/kids-words" target="_blank" rel="noopener noreferrer">🐙 GitHub (palladius/kids-words)</a>
+        <a href="https://palladius.github.io/vetrina/" target="_blank" rel="noopener noreferrer">🎮 Vetrina</a>
+        <a href="./ring.html">🔥💍 Puffin Ring</a>
+      </div>
+    </footer>
   </div>
 
   <script>
+    const APP_VERSION = ${JSON.stringify(APP_VERSION)};
     const LEVELS_IT = ${JSON.stringify(LEVELS_IT)};
     const SCENES_IMG = ${JSON.stringify(SCENES_IMG)};
     ${KidsWordsEngine.toString()}
+    ${LevelProgression.toString()}
+
+    const progression = new LevelProgression({
+      totalByTier: {
+        seby: LEVELS_IT.filter(l => l.tier === 'seby').length,
+        ale: LEVELS_IT.filter(l => l.tier === 'ale').length,
+      },
+      storage: typeof window !== 'undefined' ? window.localStorage : null,
+    });
 
     let currentTier = 'seby';
     let currentIdx = 0;
@@ -741,6 +820,20 @@ const html = `<!DOCTYPE html>
     let dragPath = [];
     let isDragging = false;
     let hintedCoords = [];
+    let levelStartedAt = new Date().toISOString();
+
+    function getActiveUser() {
+      try {
+        return window.PuffinLogin ? window.PuffinLogin.getCurrentUser() : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function getActiveUserId() {
+      const u = getActiveUser();
+      return u ? u.id : null;
+    }
 
     function getTierLevels() {
       return LEVELS_IT.filter(l => l.tier === currentTier);
@@ -759,13 +852,23 @@ const html = `<!DOCTYPE html>
       } catch (e) {}
     }
 
+    function clampToUnlocked() {
+      const uid = getActiveUserId();
+      const maxUnlocked = progression.getUnlockedMaxIdx(uid, currentTier);
+      if (currentIdx > maxUnlocked) {
+        currentIdx = maxUnlocked;
+      }
+    }
+
     function loadLevel() {
+      clampToUnlocked();
       const levels = getTierLevels();
       const lvl = levels[currentIdx % levels.length];
       engine = new KidsWordsEngine(lvl);
       dragPath = [];
       isDragging = false;
       hintedCoords = [];
+      levelStartedAt = new Date().toISOString();
       document.getElementById('kw-stage').classList.remove('peeking');
       document.getElementById('kw-album-modal').classList.remove('visible');
       document.getElementById('kw-treasure-modal').classList.remove('visible');
@@ -787,8 +890,40 @@ const html = `<!DOCTYPE html>
       const lvl = engine.level;
       const solvedCount = engine.solvedWords.size;
       const totalCount = lvl.targets.length;
+      const uid = getActiveUserId();
+      const user = getActiveUser();
+      const isAdmin = progression.isAdmin(uid);
+      const maxUnlocked = progression.getUnlockedMaxIdx(uid, currentTier);
 
-      document.getElementById('lbl-level-idx').textContent = 'Livello ' + (currentIdx + 1) + ' / ' + levels.length;
+      // Update level counter & lock indicator
+      const lockStatus = isAdmin
+        ? '👑'
+        : (maxUnlocked >= levels.length - 1 ? '🔓' : '🔒 ' + (maxUnlocked + 1) + '/' + levels.length);
+      document.getElementById('lbl-level-idx').textContent =
+        'Livello ' + (currentIdx + 1) + ' / ' + levels.length + ' (' + lockStatus + ')';
+
+      const prevBtn = document.getElementById('btn-prev-lvl');
+      const nextBtn = document.getElementById('btn-next-lvl');
+      prevBtn.disabled = currentIdx <= 0 && !isAdmin;
+      nextBtn.disabled = currentIdx >= maxUnlocked && !isAdmin;
+      nextBtn.title = nextBtn.disabled
+        ? 'Completa questo livello per sbloccare il prossimo!'
+        : 'Livello successivo';
+
+      // Papà Debug button ONLY visible to riccardo!
+      const solveOneBtn = document.getElementById('btn-solve-one');
+      solveOneBtn.classList.toggle('kw-debug-hidden', !isAdmin);
+
+      // Progress badge in footer
+      const progEl = document.getElementById('lbl-progress-badge');
+      if (isAdmin) {
+        progEl.textContent = '👑 Papà Debug (tutti sbloccati)';
+      } else if (user && user.id !== 'guest') {
+        progEl.textContent = '🐧 ' + user.shortName + ' · Sbloccati: ' + (maxUnlocked + 1) + '/' + levels.length;
+      } else {
+        progEl.textContent = '👤 Anonimo (solo sessione · F5 resetta)';
+      }
+
       document.getElementById('lbl-theme').textContent = lvl.theme;
       document.getElementById('lbl-scene-caption').textContent = '🎨 ' + lvl.scene_caption;
       document.getElementById('lbl-tiles-left').textContent =
@@ -973,11 +1108,46 @@ const html = `<!DOCTYPE html>
           speakItalian(t.word + '!');
         }
         if (res.isLevelComplete) {
-          const kidName = currentTier === 'seby' ? 'Seby' : 'Ale';
-          const allWords = engine.level.targets.map(x => x.word).join(', ');
+          const uid = getActiveUserId();
+          const newMaxUnlocked = progression.recordLevelCompleted(uid, currentTier, currentIdx);
+          const kidName = getActiveUser()?.shortName || (currentTier === 'seby' ? 'Seby' : 'Ale');
+          const levels = getTierLevels();
+          const hasNext = currentIdx + 1 < levels.length;
+
+          // Persist score + unlocked level index to Cloud Firestore via PuffinLogin
+          try {
+            if (window.PuffinLogin && progression.isPersistentUser(uid)) {
+              const endedAt = new Date().toISOString();
+              const durationSec = Math.max(5, Math.round((Date.parse(endedAt) - Date.parse(levelStartedAt)) / 1000));
+              const score = engine.level.targets.length * 100 + engine.bonusWordsFound.size * 25 + (currentIdx + 1) * 50;
+              window.PuffinLogin.submitScore({
+                appId: 'kids-words',
+                player_id: uid,
+                score,
+                startedAt: levelStartedAt,
+                endedAt,
+                durationSec,
+                extra: {
+                  tier: currentTier,
+                  level_id: engine.level.id,
+                  level_index: currentIdx,
+                  unlocked_max_idx: newMaxUnlocked,
+                  bonus_words: engine.bonusWordsFound.size,
+                },
+              }).catch(() => {});
+            }
+          } catch {}
+
+          // Reveal Hall of Fame at end of match
+          const hof = document.getElementById('hof-section');
+          if (hof) hof.hidden = false;
+
           setTimeout(() => {
-            showComicBubble('🎉', 'Quadro Svelato, bravo ' + kidName + '!', 'Hai scoperto tutte le ' + engine.level.targets.length + ' parole!', 'Livello Completato');
-            speakItalian('Evviva ' + kidName + '! Hai scoperto tutte le parole!');
+            const unlockMsg = hasNext
+              ? 'Livello ' + (currentIdx + 2) + ' sbloccato! Premi ▶ in alto per continuare!'
+              : 'Hai completato tutti i livelli di questa modalità!';
+            showComicBubble('🎉', 'Quadro Svelato, bravo ' + kidName + '!', unlockMsg, 'Livello Completato');
+            speakItalian('Evviva ' + kidName + '! ' + unlockMsg);
           }, 900);
         }
       } else if (res.status === 'bonus_word') {
@@ -1010,23 +1180,31 @@ const html = `<!DOCTYPE html>
     function renderAlbum() {
       const albumGrid = document.getElementById('kw-album-grid');
       albumGrid.innerHTML = '';
+      const uid = getActiveUserId();
       LEVELS_IT.forEach((lvl) => {
+        const tierLevels = LEVELS_IT.filter(x => x.tier === lvl.tier);
+        const idxInTier = tierLevels.findIndex(x => x.id === lvl.id);
+        const unlocked = progression.isLevelUnlocked(uid, lvl.tier, idxInTier);
         const card = document.createElement('div');
-        card.className = 'kw-album-card';
+        card.className = 'kw-album-card' + (unlocked ? '' : ' locked');
         const tierBadge = lvl.tier === 'seby' ? '🏎️ Seby' : '🐉 Ale';
+        const lockLabel = unlocked ? '🔓 Sbloccato' : '🔒 Bloccato';
         card.innerHTML =
           '<img src="' + (SCENES_IMG[lvl.scene_id] || SCENES_IMG.bees_meadow) + '" alt="' + lvl.theme + '"/>' +
           '<div class="kw-album-card-caption">' +
-            '<div style="color:#fde68a;margin-bottom:2px;">' + tierBadge + ' · ' + lvl.theme + '</div>' +
+            '<div style="color:#fde68a;margin-bottom:2px;">' + tierBadge + ' · ' + lockLabel + ' · ' + lvl.theme + '</div>' +
             '<div style="opacity:0.85;font-weight:600;">' + lvl.scene_caption + '</div>' +
           '</div>';
         card.addEventListener('click', () => {
+          if (!unlocked) {
+            showComicBubble('🔒', 'Livello Bloccato!', 'Completa prima i livelli precedenti per sbloccare "' + lvl.theme + '"!', 'Bloccato');
+            document.getElementById('kw-album-modal').classList.remove('visible');
+            return;
+          }
           currentTier = lvl.tier;
           document.getElementById('btn-tier-seby').classList.toggle('active', currentTier === 'seby');
           document.getElementById('btn-tier-ale').classList.toggle('active', currentTier === 'ale');
-          const tierLevels = getTierLevels();
-          currentIdx = tierLevels.findIndex(x => x.id === lvl.id);
-          if (currentIdx < 0) currentIdx = 0;
+          currentIdx = idxInTier >= 0 ? idxInTier : 0;
           loadLevel();
         });
         albumGrid.appendChild(card);
@@ -1064,14 +1242,29 @@ const html = `<!DOCTYPE html>
 
     document.getElementById('btn-prev-lvl').addEventListener('click', () => {
       const levels = getTierLevels();
-      currentIdx = (currentIdx - 1 + levels.length) % levels.length;
-      loadLevel();
+      const uid = getActiveUserId();
+      if (progression.isAdmin(uid)) {
+        currentIdx = (currentIdx - 1 + levels.length) % levels.length;
+        loadLevel();
+      } else if (currentIdx > 0) {
+        currentIdx -= 1;
+        loadLevel();
+      }
     });
 
     document.getElementById('btn-next-lvl').addEventListener('click', () => {
       const levels = getTierLevels();
-      currentIdx = (currentIdx + 1) % levels.length;
-      loadLevel();
+      const uid = getActiveUserId();
+      const maxUnlocked = progression.getUnlockedMaxIdx(uid, currentTier);
+      if (progression.isAdmin(uid)) {
+        currentIdx = (currentIdx + 1) % levels.length;
+        loadLevel();
+      } else if (currentIdx + 1 <= maxUnlocked && currentIdx + 1 < levels.length) {
+        currentIdx += 1;
+        loadLevel();
+      } else {
+        showComicBubble('🔒', 'Livello Bloccato', 'Finisci prima il Livello ' + (currentIdx + 1) + ' per sbloccare il successivo!', 'Progressione');
+      }
     });
 
     document.getElementById('btn-album').addEventListener('click', () => {
@@ -1094,6 +1287,15 @@ const html = `<!DOCTYPE html>
       document.getElementById('kw-treasure-modal').classList.remove('visible');
     });
 
+    document.getElementById('btn-hof-toggle').addEventListener('click', () => {
+      const hof = document.getElementById('hof-section');
+      hof.hidden = !hof.hidden;
+    });
+
+    document.getElementById('btn-hof-close').addEventListener('click', () => {
+      document.getElementById('hof-section').hidden = true;
+    });
+
     document.getElementById('btn-peek').addEventListener('click', () => {
       document.getElementById('kw-stage').classList.toggle('peeking');
     });
@@ -1107,6 +1309,7 @@ const html = `<!DOCTYPE html>
     });
 
     document.getElementById('btn-solve-one').addEventListener('click', () => {
+      if (!progression.isAdmin(getActiveUserId())) return;
       const unsolved = engine.getUnsolvedTargets();
       if (!unsolved.length) return;
       const next = unsolved[0];
@@ -1120,7 +1323,40 @@ const html = `<!DOCTYPE html>
 
     document.getElementById('btn-reset').addEventListener('click', loadLevel);
 
+    async function syncUserCloudProgression(user) {
+      if (!user) return;
+      if (user.id === 'ale' || user.id === 'seby') {
+        currentTier = user.id;
+        document.getElementById('btn-tier-seby').classList.toggle('active', currentTier === 'seby');
+        document.getElementById('btn-tier-ale').classList.toggle('active', currentTier === 'ale');
+      }
+      if (window.PuffinLogin && progression.isPersistentUser(user.id)) {
+        try {
+          const scores = await window.PuffinLogin.getTopScores({ game_id: 'kids-words', limit: 200 });
+          progression.mergeCloudScores(user.id, scores);
+        } catch {}
+      }
+      const maxUnlocked = progression.getUnlockedMaxIdx(user.id, currentTier);
+      currentIdx = progression.isAdmin(user.id) ? currentIdx : maxUnlocked;
+      loadLevel();
+    }
+
+    window.addEventListener('puffin-user-changed', (e) => {
+      const user = e.detail?.user || null;
+      if (user) {
+        syncUserCloudProgression(user);
+      } else {
+        currentIdx = 0;
+        loadLevel();
+      }
+    });
+
+    // Initial boot + wait briefly for puffin-login custom element upgrade
     loadLevel();
+    setTimeout(() => {
+      const u = getActiveUser();
+      if (u) syncUserCloudProgression(u);
+    }, 150);
   </script>
 </body>
 </html>`;

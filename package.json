@@ -1,6 +1,6 @@
 {
   "name": "kids-words",
-  "version": "0.1.0",
+  "version": "1.2.0",
   "description": "Kids Words (Parole in Fuga) — Multilingual Word Depletion Swipe Puzzle for Ale & Seby",
   "type": "module",
   "scripts": {
