@@ -493,9 +493,9 @@ const html = `<!DOCTYPE html>
         padding-top: 6px;
       }
       .kw-stage {
-        height: 676px;
-        min-height: 676px;
-        max-height: 676px;
+        height: 700px;
+        min-height: 700px;
+        max-height: 700px;
         padding: 16px;
         gap: 10px 18px;
         grid-template-columns: 1.22fr 0.78fr;
